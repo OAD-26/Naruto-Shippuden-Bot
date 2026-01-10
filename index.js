@@ -1,0 +1,193 @@
+// ===============================
+// Naruto Shippuden Bot 🍥 FULL INDEX
+// ===============================
+
+const fs = require("fs");
+const path = require("path");
+const readline = require("readline");
+const pino = require("pino");
+const express = require("express");
+const axios = require("axios");
+const {
+  default: makeWASocket,
+  useMultiFileAuthState,
+  DisconnectReason,
+} = require("@whiskeysockets/baileys");
+
+// ===============================
+// 🔥 SETTINGS
+// ===============================
+const settings = {
+  botName: "Naruto Shippuden Bot",
+  prefix: "!",
+  creatorNumber: "2349138385352", // your number
+  publicUrl: "https://YOUR-REPLIT-URL-HERE/", // will ping self
+  ownerCommands: ["setbotname","setpp","setbotpp","settings","github"], // Owner only
+  adminCommands: ["ban","kick","promote","demote","groupinfo"], // Admins only
+  everyoneCommands: [], // Fun commands etc. loaded automatically
+  groupInteraction: {}, // Stores group interact status {groupJID:true/false}
+};
+
+// ===============================
+// 🌐 WEB SERVER
+// ===============================
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get("/", (_, res) => {
+  res.status(200).send("🍥 Naruto Shippuden Bot is Alive & Breathing Chakra 🔥");
+});
+app.listen(PORT, "0.0.0.0", () => console.log(`🌐 Web server running on port ${PORT}`));
+
+// Self ping to stay alive
+setInterval(async () => {
+  try { await axios.get(settings.publicUrl); } catch {}
+}, 5 * 60 * 1000);
+
+// ===============================
+// 📱 TERMINAL INPUT
+// ===============================
+function askNumber() {
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise(resolve => {
+    rl.question("📱 Enter WhatsApp number to pair (country code, no +): ", num => {
+      rl.close();
+      resolve(num.replace(/\D/g,""));
+    });
+  });
+}
+
+// ===============================
+// 🍥 START BOT
+// ===============================
+async function startBot() {
+  if (!fs.existsSync("./auth_info")) fs.mkdirSync("./auth_info");
+
+  const { state, saveCreds } = await useMultiFileAuthState("./auth_info");
+  const sock = makeWASocket({
+    logger: pino({ level:"silent" }),
+    auth: state,
+    browser: ["NarutoShippudenBot","Desktop","1.0.0"],
+    markOnlineOnConnect: true
+  });
+
+  sock.ev.on("creds.update", saveCreds);
+
+  // Pairing if first time
+  if (!state.creds.registered) {
+    console.log("🍥 No previous session found — starting pairing");
+    const number = await askNumber();
+    try {
+      const code = await sock.requestPairingCode(number);
+      console.log(`
+🍥 PAIRING CODE GENERATED 🔥
+
+📱 Number: ${number}
+🔑 Code: ${code}
+
+Scan it from WhatsApp → Linked Devices → Link with phone number
+BELIEVE IT ⚡
+      `);
+    } catch (e) {
+      console.error("❌ Pairing failed:", e.message);
+    }
+  } else {
+    console.log("✅ Existing session found — skipping pairing");
+  }
+
+  // ===============================
+  // 🔌 CONNECTION EVENTS
+  // ===============================
+  let heartbeat;
+  sock.ev.on("connection.update", update => {
+    const { connection, lastDisconnect } = update;
+    if(connection === "open") {
+      console.log("✅ Naruto Shippuden Bot connected!");
+      heartbeat = setInterval(async () => { try { await sock.sendPresenceUpdate("available"); } catch{} }, 10*60*1000);
+    }
+    if(connection === "close") {
+      if(heartbeat) clearInterval(heartbeat);
+      const reason = lastDisconnect?.error?.output?.statusCode;
+      console.log("❌ Disconnected:", reason);
+      if(reason !== DisconnectReason.loggedOut) setTimeout(startBot,5000);
+      else console.log("🚫 Logged out — delete auth_info to pair again");
+    }
+  });
+
+  // ===============================
+  // 📩 MESSAGE HANDLER
+  // ===============================
+  sock.ev.on("messages.upsert", async ({ messages }) => {
+    const msg = messages[0];
+    if(!msg.message) return;
+
+    const from = msg.key.remoteJid;
+    const type = Object.keys(msg.message)[0];
+    let text = "";
+    if(type === "conversation") text = msg.message.conversation;
+    else if(type === "extendedTextMessage") text = msg.message.extendedTextMessage.text;
+    text = String(text || "");
+
+    if(!text.startsWith(settings.prefix)) return;
+
+    const args = text.slice(settings.prefix.length).trim().split(/ +/);
+    const commandName = args.shift().toLowerCase();
+    const sender = from.includes("@s.whatsapp.net") ? from.split("@")[0] : from;
+
+    const isOwner = sender === settings.creatorNumber;
+    const groupId = from.endsWith("@g.us") ? from : null;
+    const groupAllowed = groupId ? settings.groupInteraction[groupId] : true;
+
+    // ===============================
+    // Group interact check
+    if(groupId && !groupAllowed && !isOwner) return;
+
+    // Load commands dynamically
+    const commandPath = path.join(__dirname,"Command",`${commandName}.js`);
+    if(!fs.existsSync(commandPath)) return;
+
+    try {
+      delete require.cache[require.resolve(commandPath)];
+      const commandFile = require(commandPath);
+
+      // Permissions
+      if(settings.ownerCommands.includes(commandName) && !isOwner) return await sock.sendMessage(from,{text:"🚫 Owner only command!"});
+      if(settings.adminCommands.includes(commandName) && !isOwner) {
+        const groupMeta = groupId ? await sock.groupMetadata(groupId) : null;
+        const admins = groupMeta?.participants?.filter(p=>p.admin)?.map(p=>p.id.split("@")[0]) || [];
+        if(!admins.includes(sender)) return;
+      }
+
+      // Execute command
+      if(typeof commandFile==="function") await commandFile(sock, from, msg, args);
+      else if(commandFile && typeof commandFile.execute==="function") await commandFile.execute(sock, from, msg, args);
+
+    } catch(e){ console.error("❌ Error executing command:", commandName,e); }
+  });
+
+  // ===============================
+  // 🟢 GROUP INTERACT COMMAND (Owner Only)
+  const groupInteractPath = path.join(__dirname,"Command","groupinteract.js");
+  if(!fs.existsSync(groupInteractPath)) {
+    fs.writeFileSync(groupInteractPath, `
+module.exports = async (sock, from, msg, args) => {
+  const groupId = msg.key.remoteJid;
+  if(!groupId.endsWith("@g.us")) return sock.sendMessage(from,{text:"🚫 This command works only in groups!"});
+  const groupMeta = await sock.groupMetadata(groupId);
+  const admins = groupMeta.participants.filter(p=>p.admin).map(p=>p.id.split("@")[0]);
+  const status = args[0] && args[0].toLowerCase() === "on";
+  require('../index.js').settings.groupInteraction[groupId] = status;
+  await sock.sendMessage(from,{
+    text: \`🍥 Bot Interactions \${status?"Allowed":"Disabled"} in *\${groupMeta.subject}* 🌀\\nAdmins: \${admins.join(", ")}\`
+  });
+};
+    `);
+  }
+
+  console.log("🟢 Naruto Shippuden Bot ready with Group Interact & Permissions!");
+}
+
+// ===============================
+// ▶️ RUN
+// ===============================
+startBot();
