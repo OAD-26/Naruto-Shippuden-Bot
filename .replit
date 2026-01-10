@@ -4,8 +4,3 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
-packages = ["nano" "git" "curl"]
-
-[[ports]]
-localPort = 3000
-externalPort = 80
