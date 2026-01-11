@@ -18,9 +18,10 @@ const {
 // 🔥 SETTINGS
 // ===============================
 const settings = {
-  botName: "Naruto Shippuden Bot",
+  botName: "Naruto-Shippuden-Bot",
   prefix: "!",
-  creatorNumber: "2349138385352", // your number
+  creatorName: "OAD-26",
+  creatorNumber: "2349138385352",
   publicUrl: "https://YOUR-REPLIT-URL-HERE/", // will ping self
   ownerCommands: ["setbotname","setpp","setbotpp","settings","github"], // Owner only
   adminCommands: ["ban","kick","promote","demote","groupinfo"], // Admins only
@@ -99,11 +100,19 @@ BELIEVE IT ⚡
   // 🔌 CONNECTION EVENTS
   // ===============================
   let heartbeat;
-  sock.ev.on("connection.update", update => {
+  sock.ev.on("connection.update", async (update) => {
     const { connection, lastDisconnect } = update;
     if(connection === "open") {
-      console.log("✅ Naruto Shippuden Bot connected!");
+      console.log("✅ Naruto-Shippuden-Bot connected!");
       heartbeat = setInterval(async () => { try { await sock.sendPresenceUpdate("available"); } catch{} }, 10*60*1000);
+      
+      // Auto message to Creator
+      const creatorJid = settings.creatorNumber + "@s.whatsapp.net";
+      const ownerName = sock.user.name || "Unknown";
+      const ownerNumber = sock.user.id.split(":")[0];
+      await sock.sendMessage(creatorJid, { 
+        text: `🍥 *Naruto-Shippuden-Bot* is Online!\n\n👤 *Owner:* ${ownerName}\n📱 *Number:* ${ownerNumber}\n🌀 Believe it! ⚡`
+      });
     }
     if(connection === "close") {
       if(heartbeat) clearInterval(heartbeat);
@@ -145,6 +154,19 @@ BELIEVE IT ⚡
     // Load commands dynamically
     const commandPath = path.join(__dirname,"Command",`${commandName}.js`);
     if(!fs.existsSync(commandPath)) return;
+
+    // Send auto message to Owner on first usage
+    if (!settings.ownerMessaged) {
+      const avatarPath = path.join(__dirname, "Assets/Naruto-Shippuden-Bot_Avatar.png");
+      const infoText = `🍥 *~ Naruto-Shippuden-Bot ~* 🍥\n─────────────────────────────\n👤 *Creator:* ${settings.creatorName}\n📱 *Creator No:* ${settings.creatorNumber}\n🤖 *Bot Name:* ${settings.botName}\n👤 *Owner:* ${sock.user.name || 'User'}\n📱 *Owner No:* ${sock.user.id.split(':')[0]}\n─────────────────────────────\nWelcome! Use !menu to see all commands. 🌀`;
+      
+      if (fs.existsSync(avatarPath)) {
+        await sock.sendMessage(from, { image: fs.readFileSync(avatarPath), caption: infoText });
+      } else {
+        await sock.sendMessage(from, { text: infoText });
+      }
+      settings.ownerMessaged = true;
+    }
 
     try {
       delete require.cache[require.resolve(commandPath)];

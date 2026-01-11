@@ -50,9 +50,11 @@ module.exports = async (sock, from, msg, args) => {
     };
 
     const menuText = `
-🍥 *~ Naruto Shippuden Bot ~* 🍥
+🍥 *~ Naruto-Shippuden-Bot ~* 🍥
 ─────────────────────────────
-👤 Bot Owner: OAD-26
+👤 Creator: OAD-26
+📱 Creator Number: 2349138385352
+🤖 Bot Name: Naruto-Shippuden-Bot
 ⚡ Prefix: !
 
 ${formatCommands("Owner Commands", ownerCommands)}
