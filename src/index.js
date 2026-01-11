@@ -62,71 +62,70 @@ function askNumber() {
 // 🍥 START BOT
 // ===============================
 async function startBot() {
-  const authPath = path.join(__dirname, "../auth_info");
-  if (!fs.existsSync(authPath)) fs.mkdirSync(authPath, { recursive: true });
+    const authPath = path.join(process.cwd(), "auth_info");
+    if (!fs.existsSync(authPath)) fs.mkdirSync(authPath, { recursive: true });
 
-  const { state, saveCreds } = await useMultiFileAuthState(authPath);
-  console.log("🍥 *Initializing Shinobi Connection...* 🌀");
-  const sock = makeWASocket({
-    logger: pino({ level: "silent" }),
-    auth: state,
-    browser: ["Ubuntu", "Chrome", "20.0.04"],
-    markOnlineOnConnect: true,
-    connectTimeoutMs: 60000,
-    defaultQueryTimeoutMs: 60000,
-    keepAliveIntervalMs: 10000,
-    qrTimeout: 0, // Disable QR timeout to wait for user
-    syncFullHistory: false, // Save resources
-    getMessage: async (key) => { return { conversation: "🍥" } }
-  });
+    const { state, saveCreds } = await useMultiFileAuthState(authPath);
+    console.log("🍥 *Initializing Shinobi Connection...* 🌀");
+    const sock = makeWASocket({
+        logger: pino({ level: "silent" }),
+        auth: state,
+        browser: ["Naruto Bot", "Desktop", "20.0.04"],
+        markOnlineOnConnect: true,
+        connectTimeoutMs: 60000,
+        defaultQueryTimeoutMs: 60000,
+        keepAliveIntervalMs: 10000,
+        qrTimeout: 0,
+        syncFullHistory: false,
+        getMessage: async (key) => { return { conversation: "🍥" } }
+    });
 
   const qrcode = require("qrcode-terminal");
   let heartbeat;
 
   sock.ev.on("creds.update", saveCreds);
 
-  sock.ev.on("connection.update", async (update) => {
-    const { connection, lastDisconnect, qr } = update;
-    
-    if (qr) {
-      console.log("\n🍥 *The Scroll of Connection* has appeared! 🌀");
-      console.log("🔥 Scan the QR Code below to enter the Hidden Leaf! 🔥\n");
-      qrcode.generate(qr, { small: true });
-    } else if (connection === "connecting") {
-      console.log("🍥 *The Shinobi is preparing for the mission...* 🌀");
-    }
-    
-    if (connection === "open") {
-      console.log("✅ *Naruto-Shippuden-Bot* has entered the battlefield! 🌀");
-      heartbeat = setInterval(async () => { try { await sock.sendPresenceUpdate("available"); } catch{} }, 10*60*1000);
-      
-      // Auto message to Creator
-      const creatorJid = settings.creatorNumber + "@s.whatsapp.net";
-      const ownerName = sock.user.name || "Shinobi";
-      const ownerNumber = sock.user.id.split(":")[0];
-      await sock.sendMessage(creatorJid, { 
-        text: `🍥 *Naruto-Shippuden-Bot* is Online! 🌀\n\n👤 *Hokage (Owner):* ${ownerName}\n📱 *Ninja Registry:* ${ownerNumber}\n⚡ *Status:* Ready for Mission!\n\n🌀 *Believe it!* ⚡`
-      });
-    }
-    if(connection === "close") {
-      if(heartbeat) clearInterval(heartbeat);
-      const reason = lastDisconnect?.error?.output?.statusCode;
-      const shouldReconnect = reason !== DisconnectReason.loggedOut;
-      
-      console.log("❌ Disconnected:", reason, "| Reconnecting:", shouldReconnect);
-      
-      if(shouldReconnect) {
-        // Wait longer before reconnecting to allow system to settle
-        const delay = reason === DisconnectReason.restartRequired ? 2000 : 10000;
-        console.log(`🍥 Waiting ${delay/1000}s before reconnecting...`);
-        setTimeout(startBot, delay);
-      } else {
-        console.log("🚫 Logged out — deleting auth_info and restarting...");
-        fs.rmSync("./auth_info", { recursive: true, force: true });
-        setTimeout(startBot, 5000);
-      }
-    }
-  });
+    sock.ev.on("connection.update", async (update) => {
+        const { connection, lastDisconnect, qr } = update;
+        
+        if (qr) {
+            console.log("\n🍥 *The Scroll of Connection* has appeared! 🌀");
+            console.log("🔥 Scan the QR Code below to enter the Hidden Leaf! 🔥\n");
+            qrcode.generate(qr, { small: true });
+        } else if (connection === "connecting") {
+            console.log("🍥 *The Shinobi is preparing for the mission...* 🌀");
+        }
+        
+        if (connection === "open") {
+            console.log("✅ *Naruto-Shippuden-Bot* has entered the battlefield! 🌀");
+            heartbeat = setInterval(async () => { try { await sock.sendPresenceUpdate("available"); } catch{} }, 10*60*1000);
+            
+            // Auto message to Creator
+            const creatorJid = settings.creatorNumber + "@s.whatsapp.net";
+            const ownerName = sock.user.name || "Shinobi";
+            const ownerNumber = sock.user.id.split(":")[0];
+            await sock.sendMessage(creatorJid, { 
+                text: `🍥 *Naruto-Shippuden-Bot* is Online! 🌀\n\n👤 *Hokage (Owner):* ${ownerName}\n📱 *Ninja Registry:* ${ownerNumber}\n⚡ *Status:* Ready for Mission!\n\n🌀 *Believe it!* ⚡`
+            });
+        }
+        if(connection === "close") {
+            if(heartbeat) clearInterval(heartbeat);
+            const reason = lastDisconnect?.error?.output?.statusCode;
+            const shouldReconnect = reason !== DisconnectReason.loggedOut;
+            
+            console.log("❌ Disconnected:", reason, "| Reconnecting:", shouldReconnect);
+            
+            if(shouldReconnect) {
+                const delay = reason === DisconnectReason.restartRequired ? 2000 : 10000;
+                console.log(`🍥 Waiting ${delay/1000}s before reconnecting...`);
+                setTimeout(startBot, delay);
+            } else {
+                console.log("🚫 Logged out — deleting auth_info and restarting...");
+                fs.rmSync(authPath, { recursive: true, force: true });
+                setTimeout(startBot, 5000);
+            }
+        }
+    });
 
   // ===============================
   // 📩 MESSAGE HANDLER
