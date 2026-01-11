@@ -75,7 +75,9 @@ async function startBot() {
     connectTimeoutMs: 60000,
     defaultQueryTimeoutMs: 60000,
     keepAliveIntervalMs: 10000,
-    qrTimeout: 40000,
+    qrTimeout: 0, // Disable QR timeout to wait for user
+    syncFullHistory: false, // Save resources
+    getMessage: async (key) => { return { conversation: "🍥" } }
   });
 
   const qrcode = require("qrcode-terminal");
