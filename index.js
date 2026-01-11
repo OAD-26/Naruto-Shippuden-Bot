@@ -73,6 +73,7 @@ async function startBot() {
   });
 
   const qrcode = require("qrcode-terminal");
+  let heartbeat;
   sock.ev.on("creds.update", saveCreds);
 
   sock.ev.on("connection.update", async (update) => {
