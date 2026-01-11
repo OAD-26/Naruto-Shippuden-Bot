@@ -11,7 +11,7 @@ module.exports = {
     if (!antilinkData.groups[groupId]?.enabled) return;
 
     if (msg.body.includes("https://") || msg.body.includes("http://")) {
-      const imagePath = path.join(__dirname, '../Assets/When_Antilink_Is_On.jpg');
+      const imagePath = path.join(__dirname, '../Assets/Naruto-Shippuden-Bot_Avatar.png');
       const warningText = "⚠️🚫📛 *Links are not allowed in this group!* ❌\n🍥 Dattebayo! Stay safe and follow the rules! 🔥";
       
       if (fs.existsSync(imagePath)) {

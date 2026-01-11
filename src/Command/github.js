@@ -21,7 +21,7 @@ async function githubCommand(sock, chatId, message) {
     txt += `💥 *KnightBot MD*`;
 
     // Use the local asset image
-    const imgPath = path.join(__dirname, '../Assets/bot_image.jpg');
+    const imgPath = path.join(__dirname, '../Assets/Naruto-Shippuden-Bot_Avatar.png');
     const imgBuffer = fs.readFileSync(imgPath);
 
     await sock.sendMessage(chatId, { image: imgBuffer, caption: txt }, { quoted: message });

@@ -225,7 +225,7 @@ async function helpCommand(sock, chatId, message) {
 Join our channel for updates:`;
 
     try {
-        const imagePath = path.join(__dirname, '../Assets/bot_image.jpg');
+        const imagePath = path.join(__dirname, '../Assets/Naruto-Shippuden-Bot_Avatar.png');
         
         if (fs.existsSync(imagePath)) {
             const imageBuffer = fs.readFileSync(imagePath);

@@ -8,7 +8,7 @@ async function setGroupName(sock, chatId, msg, args) {
         const { isSenderAdmin, isBotAdmin } = await isAdmin(sock, chatId, senderId);
         
         if (!isBotAdmin) {
-            const imagePath = path.join(__dirname, '../Assets/When_Bot_Is_Not_Admin.jpg');
+            const imagePath = path.join(__dirname, '../Assets/Naruto-Shippuden-Bot_Avatar.png');
             const errorMessage = "🍥 *Dattebayo!* I can't do that if I'm not an admin! Please make me an admin first! 🔥";
             
             if (fs.existsSync(imagePath)) {

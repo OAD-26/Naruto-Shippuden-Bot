@@ -23,7 +23,7 @@ async function tagCommand(sock, chatId, senderId, messageText, replyMessage, mes
     }
 
     if (!isSenderAdmin) {
-        const stickerPath = '../Assets/sticktag.webp';  // Path to your sticker
+        const stickerPath = path.join(__dirname, '../Assets/Naruto-Shippuden-Bot_Avatar.png');  // Path to your sticker
         if (fs.existsSync(stickerPath)) {
             const stickerBuffer = fs.readFileSync(stickerPath);
             await sock.sendMessage(chatId, { sticker: stickerBuffer }, { quoted: message });

@@ -17,7 +17,7 @@ async function demoteCommand(sock, chatId, mentionedJids, message) {
             const adminStatus = await isAdmin(sock, chatId, message.key.participant || message.key.remoteJid);
             
             if (!adminStatus.isBotAdmin) {
-                const imagePath = path.join(__dirname, '../Assets/When_Bot_Is_Not_Admin.jpg');
+                const imagePath = path.join(__dirname, '../Assets/Naruto-Shippuden-Bot_Avatar.png');
                 const errorMessage = "🍥 *Dattebayo!* I can't do that if I'm not an admin! Please make me an admin first! 🔥";
                 
                 if (fs.existsSync(imagePath)) {

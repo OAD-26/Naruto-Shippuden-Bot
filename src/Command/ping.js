@@ -22,7 +22,7 @@ function formatTime(seconds) {
 
 async function pingCommand(sock, chatId, message) {
     try {
-        const imagePath = path.join(__dirname, '../Assets/Ping-Pong_replyPic.gif');
+        const imagePath = path.join(__dirname, '../Assets/Naruto-Shippuden-Bot_Avatar.png');
         const start = Date.now();
         
         if (fs.existsSync(imagePath)) {
