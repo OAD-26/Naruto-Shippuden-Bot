@@ -38,7 +38,7 @@ const PORT = process.env.PORT || 3000;
 app.get("/", (_, res) => {
   res.status(200).send("🍥 Naruto Shippuden Bot is Alive & Breathing Chakra 🔥");
 });
-app.listen(PORT, "0.0.0.0", () => console.log(`🌐 Web server running on port ${PORT}`));
+console.log("Web server skipped for QR generation");
 
 // Self ping to stay alive
 setInterval(async () => {
@@ -70,12 +70,33 @@ async function startBot() {
   const sock = makeWASocket({
     logger: pino({ level: "silent" }),
     auth: state,
-    browser: ["Ubuntu", "Chrome", "20.0.04"],
+    browser: ["Naruto-Shippuden-Bot", "Chrome", "121.0.6167.184"],
     markOnlineOnConnect: true,
-    connectTimeoutMs: 60000,
-    defaultQueryTimeoutMs: 60000,
-    keepAliveIntervalMs: 10000,
-    qrTimeout: 40000,
+    connectTimeoutMs: 120000,
+    defaultQueryTimeoutMs: 120000,
+    keepAliveIntervalMs: 30000,
+    qrTimeout: 120000,
+    patchMessageBeforeSending: (message) => {
+      const requiresPatch = !!(
+        message.buttonsMessage ||
+        message.templateMessage ||
+        message.listMessage
+      );
+      if (requiresPatch) {
+        message = {
+          viewOnceMessage: {
+            message: {
+              messageContextInfo: {
+                deviceListMetadata: {},
+                deviceListMetadataVersion: 2,
+              },
+              ...message,
+            },
+          },
+        };
+      }
+      return message;
+    },
   });
 
   const qrcode = require("qrcode-terminal");
@@ -90,8 +111,6 @@ async function startBot() {
       console.log("\n🍥 *The Scroll of Connection* has appeared! 🌀");
       console.log("🔥 Scan the QR Code below to enter the Hidden Leaf! 🔥\n");
       qrcode.generate(qr, { small: true });
-    } else if (connection === "connecting") {
-      console.log("🍥 *The Shinobi is preparing for the mission...* 🌀");
     }
     
     if (connection === "open") {
