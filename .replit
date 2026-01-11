@@ -21,13 +21,12 @@ args = "Naruto Bot Server"
 name = "Naruto Bot Server"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "node index.js"
-waitForPort = 3000
-
 [workflows.workflow.metadata]
 outputType = "console"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node src/index.js"
 
 [[ports]]
 localPort = 3000

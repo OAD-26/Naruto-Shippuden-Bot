@@ -38,7 +38,7 @@ const PORT = process.env.PORT || 3000;
 app.get("/", (_, res) => {
   res.status(200).send("🍥 Naruto Shippuden Bot is Alive & Breathing Chakra 🔥");
 });
-console.log("Web server skipped for QR generation");
+app.listen(PORT, "0.0.0.0", () => console.log(`🌐 Web server running on port ${PORT}`));
 
 // Self ping to stay alive
 setInterval(async () => {
@@ -62,21 +62,22 @@ function askNumber() {
 // 🍥 START BOT
 // ===============================
 async function startBot() {
-  const authPath = "./auth_info";
-  if (!fs.existsSync(authPath)) fs.mkdirSync(authPath);
+  const authPath = path.join(__dirname, "../auth_info");
+  if (!fs.existsSync(authPath)) fs.mkdirSync(authPath, { recursive: true });
 
   const { state, saveCreds } = await useMultiFileAuthState(authPath);
   console.log("🍥 *Initializing Shinobi Connection...* 🌀");
   const sock = makeWASocket({
     logger: pino({ level: "silent" }),
     auth: state,
-    browser: ["Naruto-Shippuden-Bot", "Chrome", "121.0.0.0"],
+    browser: ["Ubuntu", "Chrome", "20.0.04"],
     markOnlineOnConnect: true,
-    connectTimeoutMs: 120000,
-    defaultQueryTimeoutMs: 120000,
-    keepAliveIntervalMs: 30000,
-    qrTimeout: 60000,
-    shouldSyncHistoryMessage: () => true
+    connectTimeoutMs: 60000,
+    defaultQueryTimeoutMs: 60000,
+    keepAliveIntervalMs: 10000,
+    qrTimeout: 0, // Disable QR timeout to wait for user
+    syncFullHistory: false, // Save resources
+    getMessage: async (key) => { return { conversation: "🍥" } }
   });
 
   const qrcode = require("qrcode-terminal");
@@ -91,6 +92,8 @@ async function startBot() {
       console.log("\n🍥 *The Scroll of Connection* has appeared! 🌀");
       console.log("🔥 Scan the QR Code below to enter the Hidden Leaf! 🔥\n");
       qrcode.generate(qr, { small: true });
+    } else if (connection === "connecting") {
+      console.log("🍥 *The Shinobi is preparing for the mission...* 🌀");
     }
     
     if (connection === "open") {
