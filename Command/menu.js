@@ -52,18 +52,18 @@ module.exports = async (sock, from, msg, args) => {
     const menuText = `
 🍥 *~ Naruto-Shippuden-Bot ~* 🍥
 ─────────────────────────────
-👤 Creator: OAD-26
-📱 Creator Number: 2349138385352
-🤖 Bot Name: Naruto-Shippuden-Bot
-⚡ Prefix: !
+👤 *Grandmaster:* OAD-26
+📱 *Ninja Registry:* 2349138385352
+🤖 *Bot Identity:* Naruto-Shippuden-Bot
+⚡ *Summoning Prefix:* !
 
-${formatCommands("Owner Commands", ownerCommands)}
-${formatCommands("Admin Commands", adminCommands)}
-${formatCommands("Group Commands", groupCommands)}
-${formatCommands("General Commands", generalCommands)}
+${formatCommands("📜 S-Rank Scroll (Owner)", ownerCommands)}
+${formatCommands("🍃 Leaf Village Laws (Admin)", adminCommands)}
+${formatCommands("🌀 Shinobi Alliance (Group)", groupCommands)}
+${formatCommands("🍜 Ichiraku Ramen (General)", generalCommands)}
 
-💡 Type commands with *${'!'}* prefix.
-🍥 Believe it! ⚡
+💡 *Ninja Tip:* Type commands with *${'!'}* prefix.
+🍥 *Believe it!* ⚡
 ─────────────────────────────
 `;
 

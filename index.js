@@ -79,20 +79,20 @@ async function startBot() {
   sock.ev.on("connection.update", async (update) => {
     const { connection, lastDisconnect, qr } = update;
     if (qr) {
-      console.log("🍥 Scan the QR Code below to connect Naruto-Shippuden-Bot! 🔥");
+      console.log("🍥 *The Scroll of Connection* has appeared! Scan the QR Code below! 🔥");
       qrcode.generate(qr, { small: true });
     }
     
     if(connection === "open") {
-      console.log("✅ Naruto-Shippuden-Bot connected!");
+      console.log("✅ *Naruto-Shippuden-Bot* has entered the battlefield! 🌀");
       heartbeat = setInterval(async () => { try { await sock.sendPresenceUpdate("available"); } catch{} }, 10*60*1000);
       
       // Auto message to Creator
       const creatorJid = settings.creatorNumber + "@s.whatsapp.net";
-      const ownerName = sock.user.name || "Unknown";
+      const ownerName = sock.user.name || "Shinobi";
       const ownerNumber = sock.user.id.split(":")[0];
       await sock.sendMessage(creatorJid, { 
-        text: `🍥 *Naruto-Shippuden-Bot* is Online!\n\n👤 *Owner:* ${ownerName}\n📱 *Number:* ${ownerNumber}\n🌀 Believe it! ⚡`
+        text: `🍥 *Naruto-Shippuden-Bot* is Online! 🌀\n\n👤 *Hokage (Owner):* ${ownerName}\n📱 *Ninja Registry:* ${ownerNumber}\n⚡ *Status:* Ready for Mission!\n\n🌀 *Believe it!* ⚡`
       });
     }
     if(connection === "close") {
@@ -150,7 +150,7 @@ async function startBot() {
     // Send auto message to Owner on first usage
     if (!settings.ownerMessaged) {
       const avatarPath = path.join(__dirname, "Assets/Naruto-Shippuden-Bot_Avatar.png");
-      const infoText = `🍥 *~ Naruto-Shippuden-Bot ~* 🍥\n─────────────────────────────\n👤 *Creator:* ${settings.creatorName}\n📱 *Creator No:* ${settings.creatorNumber}\n🤖 *Bot Name:* ${settings.botName}\n👤 *Owner:* ${sock.user.name || 'User'}\n📱 *Owner No:* ${sock.user.id.split(':')[0]}\n─────────────────────────────\nWelcome! Use !menu to see all commands. 🌀`;
+      const infoText = `🍥 *~ Naruto-Shippuden-Bot ~* 🍥\n─────────────────────────────\n👤 *Grandmaster:* ${settings.creatorName}\n📱 *Ninja Registry:* ${settings.creatorNumber}\n🤖 *Bot Identity:* ${settings.botName}\n👤 *Hokage (Owner):* ${sock.user.name || 'Shinobi'}\n📱 *Ninja Registry:* ${sock.user.id.split(':')[0]}\n─────────────────────────────\nWelcome to the Hidden Leaf! Use !menu to see all jutsu scrolls. 🌀`;
       
       if (fs.existsSync(avatarPath)) {
         await sock.sendMessage(from, { image: fs.readFileSync(avatarPath), caption: infoText });
@@ -165,11 +165,11 @@ async function startBot() {
       const commandFile = require(commandPath);
 
       // Permissions
-      if(settings.ownerCommands.includes(commandName) && !isOwner) return await sock.sendMessage(from,{text:"🚫 Owner only command!"});
+      if(settings.ownerCommands.includes(commandName) && !isOwner) return await sock.sendMessage(from,{text:"🚫 *Halt!* This jutsu is reserved for the *Creator* only! 🌀"});
       if(settings.adminCommands.includes(commandName) && !isOwner) {
         const groupMeta = groupId ? await sock.groupMetadata(groupId) : null;
         const admins = groupMeta?.participants?.filter(p=>p.admin)?.map(p=>p.id.split("@")[0]) || [];
-        if(!admins.includes(sender)) return;
+        if(!admins.includes(sender)) return await sock.sendMessage(from,{text:"🚫 *Shadow Clone Jutsu Failed!* Only *Leaf Village Admins* can use this command! 🍃"});
       }
 
       // Execute command
