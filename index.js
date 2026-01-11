@@ -68,40 +68,20 @@ async function startBot() {
   const sock = makeWASocket({
     logger: pino({ level:"silent" }),
     auth: state,
-    browser: ["NarutoShippudenBot","Desktop","1.0.0"],
+    browser: ["Naruto-Shippuden-Bot","Safari","3.0.0"],
     markOnlineOnConnect: true
   });
 
+  const qrcode = require("qrcode-terminal");
   sock.ev.on("creds.update", saveCreds);
 
-  // Pairing if first time
-  if (!state.creds.registered) {
-    console.log("🍥 No previous session found — starting pairing");
-    const number = await askNumber();
-    try {
-      const code = await sock.requestPairingCode(number);
-      console.log(`
-🍥 PAIRING CODE GENERATED 🔥
-
-📱 Number: ${number}
-🔑 Code: ${code}
-
-Scan it from WhatsApp → Linked Devices → Link with phone number
-BELIEVE IT ⚡
-      `);
-    } catch (e) {
-      console.error("❌ Pairing failed:", e.message);
-    }
-  } else {
-    console.log("✅ Existing session found — skipping pairing");
-  }
-
-  // ===============================
-  // 🔌 CONNECTION EVENTS
-  // ===============================
-  let heartbeat;
   sock.ev.on("connection.update", async (update) => {
-    const { connection, lastDisconnect } = update;
+    const { connection, lastDisconnect, qr } = update;
+    if (qr) {
+      console.log("🍥 Scan the QR Code below to connect Naruto-Shippuden-Bot! 🔥");
+      qrcode.generate(qr, { small: true });
+    }
+    
     if(connection === "open") {
       console.log("✅ Naruto-Shippuden-Bot connected!");
       heartbeat = setInterval(async () => { try { await sock.sendPresenceUpdate("available"); } catch{} }, 10*60*1000);
@@ -117,9 +97,14 @@ BELIEVE IT ⚡
     if(connection === "close") {
       if(heartbeat) clearInterval(heartbeat);
       const reason = lastDisconnect?.error?.output?.statusCode;
-      console.log("❌ Disconnected:", reason);
-      if(reason !== DisconnectReason.loggedOut) setTimeout(startBot,5000);
-      else console.log("🚫 Logged out — delete auth_info to pair again");
+      const shouldReconnect = reason !== DisconnectReason.loggedOut;
+      console.log("❌ Disconnected:", reason, "| Reconnecting:", shouldReconnect);
+      if(shouldReconnect) startBot();
+      else {
+        console.log("🚫 Logged out — deleting auth_info and restarting...");
+        fs.rmSync("./auth_info", { recursive: true, force: true });
+        setTimeout(startBot, 5000);
+      }
     }
   });
 
