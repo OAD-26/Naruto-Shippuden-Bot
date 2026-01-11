@@ -99,9 +99,15 @@ async function startBot() {
       if(heartbeat) clearInterval(heartbeat);
       const reason = lastDisconnect?.error?.output?.statusCode;
       const shouldReconnect = reason !== DisconnectReason.loggedOut;
+      
       console.log("❌ Disconnected:", reason, "| Reconnecting:", shouldReconnect);
-      if(shouldReconnect) startBot();
-      else {
+      
+      if(shouldReconnect) {
+        // Wait longer before reconnecting to allow system to settle
+        const delay = reason === DisconnectReason.restartRequired ? 2000 : 10000;
+        console.log(`🍥 Waiting ${delay/1000}s before reconnecting...`);
+        setTimeout(startBot, delay);
+      } else {
         console.log("🚫 Logged out — deleting auth_info and restarting...");
         fs.rmSync("./auth_info", { recursive: true, force: true });
         setTimeout(startBot, 5000);
