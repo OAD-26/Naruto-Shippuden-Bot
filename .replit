@@ -16,18 +16,19 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Naruto Bot Server"
+args = "Naruto-Shippuden-Bot"
 
 [[workflows.workflow]]
-name = "Naruto Bot Server"
+name = "Naruto-Shippuden-Bot"
 author = "agent"
-
-[workflows.workflow.metadata]
-outputType = "console"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "node src/index.js"
+waitForPort = 3000
+
+[workflows.workflow.metadata]
+outputType = "console"
 
 [[ports]]
 localPort = 3000
