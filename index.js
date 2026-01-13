@@ -12,6 +12,7 @@ const {
   default: makeWASocket,
   useMultiFileAuthState,
   DisconnectReason,
+  fetchLatestBaileysVersion,
 } = require("@whiskeysockets/baileys");
 
 // ===============================
@@ -67,18 +68,22 @@ async function startBot() {
 
     const { state, saveCreds } = await useMultiFileAuthState(authPath);
     console.log("🍥 *Initializing Shinobi Connection...* 🌀");
+    const { version, isLatest } = await fetchLatestBaileysVersion();
+    console.log(`🍥 *Using WA Version:* ${version.join(".")} (Latest: ${isLatest}) 🌀`);
+
     const sock = makeWASocket({
+        version,
         logger: pino({ level: "silent" }),
         auth: state,
-        browser: ["Naruto Bot", "Chrome", "20.0.04"],
+        browser: ["Naruto-Shippuden-Bot", "Chrome", "1.0.0"],
         printQRInTerminal: true,
         markOnlineOnConnect: true,
-        connectTimeoutMs: 60000,
-        defaultQueryTimeoutMs: 60000,
-        keepAliveIntervalMs: 10000,
-        qrTimeout: 0,
-        syncFullHistory: false,
-        getMessage: async (key) => { return { conversation: "🍥" } }
+        generateHighQualityLink: true,
+        getMessage: async (key) => {
+            return {
+                conversation: "🍥 Naruto Shippuden Bot - Believe it! ⚡"
+            };
+        }
     });
 
   const qrcode = require("qrcode-terminal");
