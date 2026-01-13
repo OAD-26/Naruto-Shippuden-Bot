@@ -113,12 +113,12 @@ async function instagramCommand(sock, chatId, message) {
                     await sock.sendMessage(chatId, {
                         video: { url: mediaUrl },
                         mimetype: "video/mp4",
-                        caption: "𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗗 𝗕𝗬 𝗞𝗡𝗜𝗚𝗛𝗧-𝗕𝗢𝗧"
+                        caption: "🍥 *Wind Style: Rasenshuriken!* 🌀\n\n> *_Downloaded by Naruto-Shippuden-Bot_*"
                     }, { quoted: message });
                 } else {
                     await sock.sendMessage(chatId, {
                         image: { url: mediaUrl },
-                        caption: "𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗗 𝗕𝗬 𝗞𝗡𝗜𝗚𝗛𝗧-𝗕𝗢𝗧"
+                        caption: "🍥 *Kage Bunshin no Jutsu!* 🌀\n\n> *_Downloaded by Naruto-Shippuden-Bot_*"
                     }, { quoted: message });
                 }
                 

@@ -96,20 +96,38 @@ async function videoCommand(sock, chatId, message) {
             return;
         }
 
-        // Get video: try Izumi first, then Okatsu fallback
-        let videoData;
-        try {
-            videoData = await getIzumiVideoByUrl(videoUrl);
-        } catch (e1) {
-            videoData = await getOkatsuVideoByUrl(videoUrl);
+        // Get video: try multi-API logic
+        let videoData = null;
+        const apis = [
+            `https://api.giftedtech.my.id/api/download/dlmp4?url=${encodeURIComponent(videoUrl)}`,
+            `https://izumiiiiiiii.dpdns.org/downloader/youtube?url=${encodeURIComponent(videoUrl)}&format=720`,
+            `https://okatsu-rolezapiiz.vercel.app/downloader/ytmp4?url=${encodeURIComponent(videoUrl)}`
+        ];
+
+        for (const api of apis) {
+            try {
+                const res = await axios.get(api, { timeout: 20000 });
+                const d = res.data;
+                if (d.status === true || d.success === true || d.result?.download || d.result?.mp4) {
+                    videoData = {
+                        download: d.result?.download || d.result?.mp4 || d.result?.url || d.download_url,
+                        title: d.result?.title || d.title || videoTitle
+                    };
+                    if (videoData.download) break;
+                }
+            } catch (e) { console.log(`Video API Failed: ${api}`); }
         }
 
-        // Send video directly using the download URL
+        if (!videoData || !videoData.download) {
+            throw new Error('Chakra depleted! All download scrolls failed.');
+        }
+
+        // Send video directly
         await sock.sendMessage(chatId, {
             video: { url: videoData.download },
             mimetype: 'video/mp4',
-            fileName: `${videoData.title || videoTitle || 'video'}.mp4`,
-            caption: `*${videoData.title || videoTitle || 'Video'}*\n\n> *_Downloaded by Knight Bot MD_*`
+            fileName: `${videoData.title || 'video'}.mp4`,
+            caption: `🍥 *${videoData.title || 'Video'}* 🌀\n\n> *_Downloaded by Naruto-Shippuden-Bot_*`
         }, { quoted: message });
 
 

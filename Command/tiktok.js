@@ -181,7 +181,7 @@ async function tiktokCommand(sock, chatId, message) {
                         }
                     }
                     
-                    const caption = title ? `𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗗 𝗕𝗬 𝗞𝗡𝗜𝗚𝗛𝗧-𝗕𝗢𝗧\n\n📝 Title: ${title}` : "𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗗 𝗕𝗬 𝗞𝗡𝗜𝗚𝗛𝗧-𝗕𝗢𝗧";
+                    const caption = title ? `🍥 *TikTok Mission Success!* 🌀\n\n📝 *Title:* ${title}\n\n> *_Downloaded by Naruto-Shippuden-Bot_*` : "🍥 *TikTok Mission Success!* 🌀\n\n> *_Downloaded by Naruto-Shippuden-Bot_*";
                     
                     await sock.sendMessage(chatId, {
                         video: videoBuffer,
