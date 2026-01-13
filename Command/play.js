@@ -8,7 +8,7 @@ async function playCommand(sock, chatId, message) {
         
         if (!searchQuery) {
             return await sock.sendMessage(chatId, { 
-                text: "What song do you want to download?"
+                text: "🍥 *Kage Bunshin no Jutsu!* 🌀\n\nPlease provide a song name to search, shinobi!"
             });
         }
 
@@ -16,31 +16,48 @@ async function playCommand(sock, chatId, message) {
         const { videos } = await yts(searchQuery);
         if (!videos || videos.length === 0) {
             return await sock.sendMessage(chatId, { 
-                text: "No songs found!"
+                text: "🚫 *Shadow Clone Jutsu Failed!* 🌀\n\nNo songs found in the Hidden Leaf scroll!"
             });
         }
 
         // Send loading message
         await sock.sendMessage(chatId, {
-            text: "_Please wait your download is in progress_"
+            text: "🍥 *Wind Style: Rasenshuriken!* 🌀\n\n_Gathering chakra... your download is in progress!_"
         });
 
         // Get the first video result
         const video = videos[0];
         const urlYt = video.url;
 
-        // Fetch audio data from API
-        const response = await axios.get(`https://apis-keith.vercel.app/download/dlmp3?url=${urlYt}`);
-        const data = response.data;
+        // Try multiple APIs for better reliability
+        const apis = [
+            `https://api.giftedtech.my.id/api/download/dlmp3?url=${urlYt}`,
+            `https://apis-keith.vercel.app/download/dlmp3?url=${urlYt}`,
+            `https://api.vreden.my.id/api/ytmp3?url=${urlYt}`
+        ];
 
-        if (!data || !data.status || !data.result || !data.result.downloadUrl) {
-            return await sock.sendMessage(chatId, { 
-                text: "Failed to fetch audio from the API. Please try again later."
-            });
+        let audioUrl = null;
+        let title = video.title;
+
+        for (const api of apis) {
+            try {
+                const response = await axios.get(api, { timeout: 15000 });
+                const data = response.data;
+                
+                if (data.status === true || data.success === true || data.status === 200) {
+                    audioUrl = data.result?.downloadUrl || data.result?.url || data.result?.download;
+                    if (audioUrl) break;
+                }
+            } catch (err) {
+                console.log(`API Failed: ${api}`);
+            }
         }
 
-        const audioUrl = data.result.downloadUrl;
-        const title = data.result.title;
+        if (!audioUrl) {
+            return await sock.sendMessage(chatId, { 
+                text: "🚫 *Chakra Depleted!* 🌀\n\nFailed to fetch the song from any scroll. Try again later!"
+            });
+        }
 
         // Send the audio
         await sock.sendMessage(chatId, {
@@ -50,14 +67,11 @@ async function playCommand(sock, chatId, message) {
         }, { quoted: message });
 
     } catch (error) {
-        console.error('Error in song2 command:', error);
+        console.error('Error in play command:', error);
         await sock.sendMessage(chatId, { 
-            text: "Download failed. Please try again later."
+            text: "💥 *Explosion Jutsu!* 🌀\n\nSomething went wrong during the mission. Try again!"
         });
     }
 }
 
-module.exports = playCommand; 
-
-/*Powered by KNIGHT-BOT*
-*Credits to Keith MD*`*/
+module.exports = playCommand;
