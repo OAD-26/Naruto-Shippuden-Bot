@@ -157,7 +157,7 @@ async function startBot() {
     if(groupId && !groupAllowed && !isOwner) return;
 
     // Load commands dynamically
-    const commandPath = path.join(__dirname,"Command",`${commandName}.js`);
+    const commandPath = path.join(process.cwd(),"Command",`${commandName}.js`);
     if(!fs.existsSync(commandPath)) return;
 
     // Send auto message to Owner on first usage
@@ -194,7 +194,7 @@ async function startBot() {
 
   // ===============================
   // 🟢 GROUP INTERACT COMMAND (Owner Only)
-  const groupInteractPath = path.join(__dirname,"Command","groupinteract.js");
+  const groupInteractPath = path.join(process.cwd(),"Command","groupinteract.js");
   if(!fs.existsSync(groupInteractPath)) {
     fs.writeFileSync(groupInteractPath, `
 module.exports = async (sock, from, msg, args) => {
