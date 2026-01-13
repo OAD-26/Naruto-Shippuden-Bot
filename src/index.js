@@ -70,7 +70,8 @@ async function startBot() {
     const sock = makeWASocket({
         logger: pino({ level: "silent" }),
         auth: state,
-        browser: ["Naruto Bot", "Desktop", "20.0.04"],
+        browser: ["Naruto Bot", "Chrome", "20.0.04"],
+        printQRInTerminal: true,
         markOnlineOnConnect: true,
         connectTimeoutMs: 60000,
         defaultQueryTimeoutMs: 60000,
