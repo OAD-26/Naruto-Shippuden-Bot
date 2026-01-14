@@ -3,8 +3,7 @@ const axios = require('axios');
 
 async function playCommand(sock, from, msg, args) {
     try {
-        const text = message.message?.conversation || message.message?.extendedTextMessage?.text;
-        const searchQuery = text.split(' ').slice(1).join(' ').trim();
+        const searchQuery = args.join(' ');
         
         if (!searchQuery) {
             return await sock.sendMessage(from, { 
