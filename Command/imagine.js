@@ -25,12 +25,23 @@ async function imagineCommand(sock, from, msg, args) {
             const response = await axios.get(apiUrl);
             if (response.data && response.data.result) {
                 const videoUrl = response.data.result;
-                const videoBuffer = await fetchBuffer(videoUrl);
+                const videoBuffer = await fetchBuffer(videoUrl, {
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                        'Accept': 'video/mp4,video/*;q=0.9,*/*;q=0.8',
+                        'Referer': 'https://shizoapi.onrender.com/'
+                    }
+                });
+
+                if (!Buffer.isBuffer(videoBuffer) || videoBuffer.length < 51200) {
+                    throw new Error('Video scroll is too thin! Chakra depletion (Buffer < 50kb)');
+                }
                 
                 await sock.sendMessage(from, {
                     video: videoBuffer,
-                    caption: `🍥 *Jutsu Success!* 🌀\n\n🎞️ *Video Scroll:* "${videoPrompt}"\n⚡ *Powered by Wind Style*`,
-                    mimetype: 'video/mp4'
+                    caption: `🍥 *JUTSU SUCCESS!* 🌀\n\n🎞️ *Video Scroll:* "${videoPrompt}"\n⚡ *Powered by Wind Style: Rasenshuriken!* \n\n*Believe it!* 🤜🤛`,
+                    mimetype: 'video/mp4',
+                    fileName: `Naruto_Scroll_${Date.now()}.mp4`
                 }, { quoted: msg });
             } else {
                 throw new Error('Video generation failed');
@@ -40,11 +51,20 @@ async function imagineCommand(sock, from, msg, args) {
             const enhancedPrompt = `${text}, high quality, detailed, masterpiece, 4k, cinematic lighting`;
             const apiUrl = `https://shizoapi.onrender.com/api/ai/imagine?apikey=shizo&query=${encodeURIComponent(enhancedPrompt)}`;
             
-            const imageBuffer = await fetchBuffer(apiUrl);
+            const imageBuffer = await fetchBuffer(apiUrl, {
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                    'Accept': 'image/png,image/jpeg,image/*;q=0.9,*/*;q=0.8'
+                }
+            });
+
+            if (!Buffer.isBuffer(imageBuffer) || imageBuffer.length < 51200) {
+                throw new Error('Image scroll is too thin! Chakra depletion (Buffer < 50kb)');
+            }
             
             await sock.sendMessage(from, {
                 image: imageBuffer,
-                caption: `🍥 *Jutsu Success!* 🌀\n\n🖼️ *Image Scroll:* "${text}"\n⚡ *Believe it!*`
+                caption: `🍥 *JUTSU SUCCESS!* 🌀\n\n🖼️ *Image Scroll:* "${text}"\n⚡ *Mastered by the Seventh Hokage!* \n\n*Believe it!* 🤜🤛`
             }, { quoted: msg });
         }
 
