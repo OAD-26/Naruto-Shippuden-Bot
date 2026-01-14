@@ -3,82 +3,57 @@ const { fetchBuffer } = require('../lib/myfunc');
 
 async function imagineCommand(sock, from, msg, args) {
     try {
-        // Get the prompt from the message
-        const prompt = message.message?.conversation?.trim() || 
-                      message.message?.extendedTextMessage?.text?.trim() || '';
+        const text = args.join(' ');
         
-        // Remove the command prefix and trim
-        const imagePrompt = prompt.slice(8).trim();
-        
-        if (!imagePrompt) {
-            await sock.sendMessage(from, {
-                text: 'Please provide a prompt for the image generation.\nExample: .imagine a beautiful sunset over mountains'
-            }, {
-                quoted: msg
-            });
-            return;
+        if (!text) {
+            return await sock.sendMessage(from, {
+                text: '🍥 *KUCHIYOSE NO JUTSU!* 🌀\n\nI need a prompt to manifest your vision, shinobi! \nExample: `!imagine a fierce battle between Naruto and Sasuke` or `!imagine video of a dragon flying`'
+            }, { quoted: msg });
         }
 
-        // Send processing message
+        const isVideo = text.toLowerCase().includes('video');
+        
         await sock.sendMessage(from, {
-            text: '🎨 Generating your image... Please wait.'
-        }, {
-            quoted: msg
-        });
+            text: `🍥 *Chakra focus initiated...* 🌀\n\nManifesting your ${isVideo ? 'video' : 'image'} through the *Summoning Jutsu*! Please wait...`
+        }, { quoted: msg });
 
-        // Enhance the prompt with quality keywords
-        const enhancedPrompt = enhancePrompt(imagePrompt);
-
-        // Make API request
-        const response = await axios.get(`https://shizoapi.onrender.com/api/ai/imagine?apikey=shizo&query=${encodeURIComponent(enhancedPrompt)}`, {
-            responseType: 'arraybuffer'
-        });
-
-        // Convert response to buffer
-        const imageBuffer = Buffer.from(response.data);
-
-        // Send the generated image
-        await sock.sendMessage(from, {
-            image: imageBuffer,
-            caption: `🎨 Generated image for prompt: "${imagePrompt}"`
-        }, {
-            quoted: msg
-        });
+        if (isVideo) {
+            // Video Generation using ZELL API (Multi-step)
+            const videoPrompt = text.replace(/video/gi, '').trim();
+            const apiUrl = `https://shizoapi.onrender.com/api/ai/z-imagine-video?apikey=shizo&query=${encodeURIComponent(videoPrompt)}`;
+            
+            const response = await axios.get(apiUrl);
+            if (response.data && response.data.result) {
+                const videoUrl = response.data.result;
+                const videoBuffer = await fetchBuffer(videoUrl);
+                
+                await sock.sendMessage(from, {
+                    video: videoBuffer,
+                    caption: `🍥 *Jutsu Success!* 🌀\n\n🎞️ *Video Scroll:* "${videoPrompt}"\n⚡ *Powered by Wind Style*`,
+                    mimetype: 'video/mp4'
+                }, { quoted: msg });
+            } else {
+                throw new Error('Video generation failed');
+            }
+        } else {
+            // Image Generation
+            const enhancedPrompt = `${text}, high quality, detailed, masterpiece, 4k, cinematic lighting`;
+            const apiUrl = `https://shizoapi.onrender.com/api/ai/imagine?apikey=shizo&query=${encodeURIComponent(enhancedPrompt)}`;
+            
+            const imageBuffer = await fetchBuffer(apiUrl);
+            
+            await sock.sendMessage(from, {
+                image: imageBuffer,
+                caption: `🍥 *Jutsu Success!* 🌀\n\n🖼️ *Image Scroll:* "${text}"\n⚡ *Believe it!*`
+            }, { quoted: msg });
+        }
 
     } catch (error) {
         console.error('Error in imagine command:', error);
         await sock.sendMessage(from, {
-            text: '❌ Failed to generate image. Please try again later.'
-        }, {
-            quoted: msg
-        });
+            text: '❌ *Jutsu Interrupted!* 🌀\n\nMy chakra flow was disturbed. Please try again later, shinobi!'
+        }, { quoted: msg });
     }
 }
 
-// Function to enhance the prompt
-function enhancePrompt(prompt) {
-    // Quality enhancing keywords
-    const qualityEnhancers = [
-        'high quality',
-        'detailed',
-        'masterpiece',
-        'best quality',
-        'ultra realistic',
-        '4k',
-        'highly detailed',
-        'professional photography',
-        'cinematic lighting',
-        'sharp focus'
-    ];
-
-    // Randomly select 3-4 enhancers
-    const numEnhancers = Math.floor(Math.random() * 2) + 3; // Random number between 3-4
-    const selectedEnhancers = qualityEnhancers
-        .sort(() => Math.random() - 0.5)
-        .slice(0, numEnhancers);
-
-    // Combine original prompt with enhancers
-    return `${prompt}, ${selectedEnhancers.join(', ')}`;
-}
-
-module.exports = imagineCommand; 
+module.exports = imagineCommand;
