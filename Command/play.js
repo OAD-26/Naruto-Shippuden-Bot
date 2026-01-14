@@ -52,6 +52,19 @@ async function playCommand(sock, from, msg, args) {
         const urlYt = bestResult.url;
         const title = bestResult.title;
 
+        // Send detailed message first
+        const infoMessage = `
+🍥 *MUSIC SUMMONING SUCCESS!* 🌀
+─────────────────────────────
+🎵 *Title:* ${title}
+👤 *Platform:* ${bestResult.source}
+🌐 *Source:* ${urlYt}
+⚡ *Status:* Delivering Chakra...
+─────────────────────────────
+*Believe it!* 🤜🤛`.trim();
+
+        await sock.sendMessage(from, { text: infoMessage }, { quoted: msg });
+
         // Try multiple APIs for better reliability
         const apis = [
             `https://api.giftedtech.my.id/api/download/dlmp3?url=${urlYt}`,
@@ -60,7 +73,6 @@ async function playCommand(sock, from, msg, args) {
         ];
 
         let audioUrl = null;
-        let title = video.title;
 
         for (const api of apis) {
             try {
