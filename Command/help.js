@@ -2,7 +2,7 @@ const settings = require('../settings');
 const fs = require('fs');
 const path = require('path');
 
-async function helpCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     const helpMessage = `
 ╔═══════════════════╗
    *🤖 ${settings.botName || 'Naruto-Shippuden-Bot'}*  
@@ -232,10 +232,10 @@ Join our channel for updates:`;
             const stickerPath = path.join(__dirname, '../Assets/sticker-intro.webp');
             
             if (fs.existsSync(stickerPath)) {
-                await sock.sendMessage(chatId, { sticker: fs.readFileSync(stickerPath) }, { quoted: message });
+                await sock.sendMessage(from, { sticker: fs.readFileSync(stickerPath) }, { quoted: msg });
             }
             
-            await sock.sendMessage(chatId, {
+            await sock.sendMessage(from, {
                 image: imageBuffer,
                 caption: helpMessage,
                 contextInfo: {
@@ -247,10 +247,10 @@ Join our channel for updates:`;
                         serverMessageId: -1
                     }
                 }
-            },{ quoted: message });
+            },{ quoted: msg });
         } else {
             console.error('Bot image not found at:', imagePath);
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: helpMessage,
                 contextInfo: {
                     forwardingScore: 1,
@@ -265,7 +265,7 @@ Join our channel for updates:`;
         }
     } catch (error) {
         console.error('Error in help command:', error);
-        await sock.sendMessage(chatId, { text: helpMessage });
+        await sock.sendMessage(from, { text: helpMessage });
     }
 }
 

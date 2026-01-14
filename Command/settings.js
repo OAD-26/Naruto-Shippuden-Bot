@@ -11,13 +11,13 @@ function readJsonSafe(path, fallback) {
 
 const isOwnerOrSudo = require('../lib/isOwner');
 
-async function settingsCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
-        const senderId = message.key.participant || message.key.remoteJid;
+        const senderId = message.key.participant || from;
         const isOwner = await isOwnerOrSudo(senderId, sock, chatId);
         
         if (!message.key.fromMe && !isOwner) {
-            await sock.sendMessage(chatId, { text: 'Only bot owner can use this command!' }, { quoted: message });
+            await sock.sendMessage(from, { text: 'Only bot owner can use this command!' }, { quoted: msg });
             return;
         }
 
@@ -82,10 +82,10 @@ async function settingsCommand(sock, chatId, message) {
             lines.push('Note: Per-group settings will be shown when used inside a group.');
         }
 
-        await sock.sendMessage(chatId, { text: lines.join('\n') }, { quoted: message });
+        await sock.sendMessage(from, { text: lines.join('\n') }, { quoted: msg });
     } catch (error) {
         console.error('Error in settings command:', error);
-        await sock.sendMessage(chatId, { text: 'Failed to read settings.' }, { quoted: message });
+        await sock.sendMessage(from, { text: 'Failed to read settings.' }, { quoted: msg });
     }
 }
 

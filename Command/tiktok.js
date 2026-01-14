@@ -4,7 +4,7 @@ const axios = require('axios');
 // Store processed message IDs to prevent duplicates
 const processedMessages = new Set();
 
-async function tiktokCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         // Check if message has already been processed
         if (processedMessages.has(message.key.id)) {
@@ -22,7 +22,7 @@ async function tiktokCommand(sock, chatId, message) {
         const text = message.message?.conversation || message.message?.extendedTextMessage?.text;
         
         if (!text) {
-            return await sock.sendMessage(chatId, { 
+            return await sock.sendMessage(from, { 
                 text: "Please provide a TikTok link for the video."
             });
         }
@@ -31,7 +31,7 @@ async function tiktokCommand(sock, chatId, message) {
         const url = text.split(' ').slice(1).join(' ').trim();
         
         if (!url) {
-            return await sock.sendMessage(chatId, { 
+            return await sock.sendMessage(from, { 
                 text: "Please provide a TikTok link for the video."
             });
         }
@@ -48,12 +48,12 @@ async function tiktokCommand(sock, chatId, message) {
         const isValidUrl = tiktokPatterns.some(pattern => pattern.test(url));
         
         if (!isValidUrl) {
-            return await sock.sendMessage(chatId, { 
+            return await sock.sendMessage(from, { 
                 text: "That is not a valid TikTok link. Please provide a valid TikTok video link."
             });
         }
 
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             react: { text: '🔄', key: message.key }
         });
 
@@ -122,16 +122,16 @@ async function tiktokCommand(sock, chatId, message) {
                                           media.type === 'video';
 
                             if (isVideo) {
-                                await sock.sendMessage(chatId, {
+                                await sock.sendMessage(from, {
                                     video: { url: mediaUrl },
                                     mimetype: "video/mp4",
                                     caption: "𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗗 𝗕𝗬 𝗡𝗔𝗥𝗨𝗧𝗢-𝗦𝗛𝗜𝗣𝗣𝗨𝗗𝗘𝗡-𝗕𝗢𝗧"
-                                }, { quoted: message });
+                                }, { quoted: msg });
                             } else {
-                                await sock.sendMessage(chatId, {
+                                await sock.sendMessage(from, {
                                     image: { url: mediaUrl },
                                     caption: "𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗗 𝗕𝗬 𝗡𝗔𝗥𝗨𝗧𝗢-𝗦𝗛𝗜𝗣𝗣𝗨𝗗𝗘𝗡-𝗕𝗢𝗧"
-                                }, { quoted: message });
+                                }, { quoted: msg });
                             }
                         }
                         return;
@@ -183,11 +183,11 @@ async function tiktokCommand(sock, chatId, message) {
                     
                     const caption = title ? `🍥 *TikTok Mission Success!* 🌀\n\n📝 *Title:* ${title}\n\n> *_Downloaded by Naruto-Shippuden-Bot_*` : "🍥 *TikTok Mission Success!* 🌀\n\n> *_Downloaded by Naruto-Shippuden-Bot_*";
                     
-                    await sock.sendMessage(chatId, {
+                    await sock.sendMessage(from, {
                         video: videoBuffer,
                         mimetype: "video/mp4",
                         caption: caption
-                    }, { quoted: message });
+                    }, { quoted: msg });
 
                     // If we have audio URL, download and send it as well
                     if (audioUrl) {
@@ -202,11 +202,11 @@ async function tiktokCommand(sock, chatId, message) {
                             
                             const audioBuffer = Buffer.from(audioResponse.data);
                             
-                            await sock.sendMessage(chatId, {
+                            await sock.sendMessage(from, {
                                 audio: audioBuffer,
                                 mimetype: "audio/mp3",
                                 caption: "🎵 Audio from TikTok"
-                            }, { quoted: message });
+                            }, { quoted: msg });
                         } catch (audioError) {
                             console.error(`Failed to download audio: ${audioError.message}`);
                         }
@@ -218,11 +218,11 @@ async function tiktokCommand(sock, chatId, message) {
                     try {
                         const caption = title ? `𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗗 𝗕𝗬 𝗡𝗔𝗥𝗨𝗧𝗢-𝗦𝗛𝗜𝗣𝗣𝗨𝗗𝗘𝗡-𝗕𝗢𝗧\n\n📝 Title: ${title}` : "𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗗 𝗕𝗬 𝗡𝗔𝗥𝗨𝗧𝗢-𝗦𝗛𝗜𝗣𝗣𝗨𝗗𝗘𝗡-𝗕𝗢𝗧";
                         
-                        await sock.sendMessage(chatId, {
+                        await sock.sendMessage(from, {
                             video: { url: videoUrl },
                             mimetype: "video/mp4",
                             caption: caption
-                        }, { quoted: message });
+                        }, { quoted: msg });
                         return;
                     } catch (urlError) {
                         console.error(`URL method also failed: ${urlError.message}`);
@@ -231,20 +231,20 @@ async function tiktokCommand(sock, chatId, message) {
             }
 
             // If we reach here, no method worked
-            return await sock.sendMessage(chatId, { 
+            return await sock.sendMessage(from, { 
                 text: "❌ Failed to download TikTok video. All download methods failed. Please try again with a different link or check if the video is available."
-            },{ quoted: message });
+            },{ quoted: msg });
         } catch (error) {
             console.error('Error in TikTok download:', error);
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: "Failed to download the TikTok video. Please try again with a different link."
-            },{ quoted: message });
+            },{ quoted: msg });
         }
     } catch (error) {
         console.error('Error in TikTok command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: "An error occurred while processing the request. Please try again later."
-        },{ quoted: message });
+        },{ quoted: msg });
     }
 }
 

@@ -2,26 +2,26 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
-async function facebookCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         const text = message.message?.conversation || message.message?.extendedTextMessage?.text;
         const url = text.split(' ').slice(1).join(' ').trim();
         
         if (!url) {
-            return await sock.sendMessage(chatId, { 
+            return await sock.sendMessage(from, { 
                 text: "Please provide a Facebook video URL.\nExample: .fb https://www.facebook.com/..."
-            }, { quoted: message });
+            }, { quoted: msg });
         }
 
         // Validate Facebook URL
         if (!url.includes('facebook.com')) {
-            return await sock.sendMessage(chatId, { 
+            return await sock.sendMessage(from, { 
                 text: "That is not a Facebook link."
-            }, { quoted: message });
+            }, { quoted: msg });
         }
 
         // Send loading reaction
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             react: { text: '🔄', key: message.key }
         });
 
@@ -158,20 +158,20 @@ async function facebookCommand(sock, chatId, message) {
         }
 
         if (!fbvid) {
-            return await sock.sendMessage(chatId, { 
+            return await sock.sendMessage(from, { 
                 text: '❌ Failed to get video URL from Facebook.\n\nPossible reasons:\n• Video is private or deleted\n• Link is invalid\n• Video is not available for download\n\nPlease try a different Facebook video link.'
-            }, { quoted: message });
+            }, { quoted: msg });
         }
 
         // Try URL method first (more reliable)
         try {
             const caption = title ? `🍥 *Facebook Jutsu Success!* 🌀\n\n📝 *Title:* ${title}\n\n> *_Downloaded by Naruto-Shippuden-Bot_*` : "🍥 *Facebook Jutsu Success!* 🌀\n\n> *_Downloaded by Naruto-Shippuden-Bot_*";
             
-            await sock.sendMessage(chatId, {
+            await sock.sendMessage(from, {
                 video: { url: fbvid },
                 mimetype: "video/mp4",
                 caption: caption
-            }, { quoted: message });
+            }, { quoted: msg });
             
             return;
         } catch (urlError) {
@@ -218,11 +218,11 @@ async function facebookCommand(sock, chatId, message) {
                 // Send the video
                 const caption = title ? `🍥 *Facebook Jutsu Success!* 🌀\n\n📝 *Title:* ${title}\n\n> *_Downloaded by Naruto-Shippuden-Bot_*` : "🍥 *Facebook Jutsu Success!* 🌀\n\n> *_Downloaded by Naruto-Shippuden-Bot_*";
                 
-                await sock.sendMessage(chatId, {
+                await sock.sendMessage(from, {
                     video: { url: tempFile },
                     mimetype: "video/mp4",
                     caption: caption
-                }, { quoted: message });
+                }, { quoted: msg });
 
                 // Clean up temp file
                 try {
@@ -239,9 +239,9 @@ async function facebookCommand(sock, chatId, message) {
 
     } catch (error) {
         console.error('Error in Facebook command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: "An error occurred. API might be down. Error: " + error.message
-        }, { quoted: message });
+        }, { quoted: msg });
     }
 }
 

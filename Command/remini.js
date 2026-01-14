@@ -25,7 +25,7 @@ async function getQuotedOrOwnImageUrl(sock, message) {
     return null;
 }
 
-async function reminiCommand(sock, chatId, message, args) {
+async function(sock, from, msg, args) {
     try {
         let imageUrl = null;
         
@@ -35,18 +35,18 @@ async function reminiCommand(sock, chatId, message, args) {
             if (isValidUrl(url)) {
                 imageUrl = url;
             } else {
-                return sock.sendMessage(chatId, { 
+                return sock.sendMessage(from, { 
                     text: '❌ Invalid URL provided.\n\nUsage: `.remini https://example.com/image.jpg`' 
-                }, { quoted: message });
+                }, { quoted: msg });
             }
         } else {
             // Try to get image from message or quoted message
             imageUrl = await getQuotedOrOwnImageUrl(sock, message);
             
             if (!imageUrl) {
-                return sock.sendMessage(chatId, { 
+                return sock.sendMessage(from, { 
                     text: '📸 *Remini AI Enhancement Command*\n\nUsage:\n• `.remini <image_url>`\n• Reply to an image with `.remini`\n• Send image with `.remini`\n\nExample: `.remini https://example.com/image.jpg`' 
-                }, { quoted: message });
+                }, { quoted: msg });
             }
         }
 
@@ -73,10 +73,10 @@ async function reminiCommand(sock, chatId, message, args) {
                 
                 if (imageResponse.status === 200 && imageResponse.data) {
                     // Send the enhanced image
-                    await sock.sendMessage(chatId, {
+                    await sock.sendMessage(from, {
                         image: imageResponse.data,
                         caption: '✨ *Image enhanced successfully!*\n\n𝗘𝗡𝗛𝗔𝗡𝗖𝗘𝗗 𝗕𝗬 𝗞𝗡𝗜𝗚𝗛𝗧-𝗕𝗢𝗧'
-                    }, { quoted: message });
+                    }, { quoted: msg });
                 } else {
                     throw new Error('Failed to download enhanced image');
                 }
@@ -106,9 +106,9 @@ async function reminiCommand(sock, chatId, message, args) {
             errorMessage = '❌ Image processing failed. Please try with a different image.';
         }
         
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: errorMessage 
-        }, { quoted: message });
+        }, { quoted: msg });
     }
 }
 

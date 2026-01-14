@@ -5,12 +5,12 @@ async function tagNotAdminCommand(sock, chatId, senderId, message) {
         const { isSenderAdmin, isBotAdmin } = await isAdmin(sock, chatId, senderId);
 
         if (!isBotAdmin) {
-            await sock.sendMessage(chatId, { text: 'Please make the bot an admin first.' }, { quoted: message });
+            await sock.sendMessage(from, { text: 'Please make the bot an admin first.' }, { quoted: msg });
             return;
         }
 
         if (!isSenderAdmin) {
-            await sock.sendMessage(chatId, { text: 'Only admins can use the .tagnotadmin command.' }, { quoted: message });
+            await sock.sendMessage(from, { text: 'Only admins can use the .tagnotadmin command.' }, { quoted: msg });
             return;
         }
 
@@ -19,7 +19,7 @@ async function tagNotAdminCommand(sock, chatId, senderId, message) {
 
         const nonAdmins = participants.filter(p => !p.admin).map(p => p.id);
         if (nonAdmins.length === 0) {
-            await sock.sendMessage(chatId, { text: 'No non-admin members to tag.' }, { quoted: message });
+            await sock.sendMessage(from, { text: 'No non-admin members to tag.' }, { quoted: msg });
             return;
         }
 
@@ -28,10 +28,10 @@ async function tagNotAdminCommand(sock, chatId, senderId, message) {
             text += `@${jid.split('@')[0]}\n`;
         });
 
-        await sock.sendMessage(chatId, { text, mentions: nonAdmins }, { quoted: message });
+        await sock.sendMessage(from, { text, mentions: nonAdmins }, { quoted: msg });
     } catch (error) {
         console.error('Error in tagnotadmin command:', error);
-        await sock.sendMessage(chatId, { text: 'Failed to tag non-admin members.' }, { quoted: message });
+        await sock.sendMessage(from, { text: 'Failed to tag non-admin members.' }, { quoted: msg });
     }
 }
 

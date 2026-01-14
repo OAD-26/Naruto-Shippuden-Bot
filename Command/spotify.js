@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-async function spotifyCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         const rawText = message.message?.conversation?.trim() ||
             message.message?.extendedTextMessage?.text?.trim() ||
@@ -12,7 +12,7 @@ async function spotifyCommand(sock, chatId, message) {
         const query = rawText.slice(used.length).trim();
 
         if (!query) {
-            await sock.sendMessage(chatId, { text: 'Usage: .spotify <song/artist/keywords>\nExample: .spotify con calma' }, { quoted: message });
+            await sock.sendMessage(from, { text: 'Usage: .spotify <song/artist/keywords>\nExample: .spotify con calma' }, { quoted: msg });
             return;
         }
 
@@ -26,7 +26,7 @@ async function spotifyCommand(sock, chatId, message) {
         const r = data.result;
         const audioUrl = r.audio;
         if (!audioUrl) {
-            await sock.sendMessage(chatId, { text: 'No downloadable audio found for this query.' }, { quoted: message });
+            await sock.sendMessage(from, { text: 'No downloadable audio found for this query.' }, { quoted: msg });
             return;
         }
 
@@ -34,21 +34,21 @@ async function spotifyCommand(sock, chatId, message) {
 
          // Send cover and info as a follow-up (optional)
          if (r.thumbnails) {
-            await sock.sendMessage(chatId, { image: { url: r.thumbnails }, caption }, { quoted: message });
+            await sock.sendMessage(from, { image: { url: r.thumbnails }, caption }, { quoted: msg });
         } else if (caption) {
-            await sock.sendMessage(chatId, { text: caption }, { quoted: message });
+            await sock.sendMessage(from, { text: caption }, { quoted: msg });
         }
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             audio: { url: audioUrl },
             mimetype: 'audio/mpeg',
             fileName: `${(r.title || r.name || 'track').replace(/[\\/:*?"<>|]/g, '')}.mp3`
-        }, { quoted: message });
+        }, { quoted: msg });
 
        
 
     } catch (error) {
         console.error('[SPOTIFY] error:', error?.message || error);
-        await sock.sendMessage(chatId, { text: 'Failed to fetch Spotify audio. Try another query later.' }, { quoted: message });
+        await sock.sendMessage(from, { text: 'Failed to fetch Spotify audio. Try another query later.' }, { quoted: msg });
     }
 }
 

@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-async function soraCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         const rawText = message.message?.conversation?.trim() ||
             message.message?.extendedTextMessage?.text?.trim() ||
@@ -16,7 +16,7 @@ async function soraCommand(sock, chatId, message) {
         const input = args || quotedText;
 
         if (!input) {
-            await sock.sendMessage(chatId, { text: 'Provide a prompt. Example: .sora anime girl with short blue hair' }, { quoted: message });
+            await sock.sendMessage(from, { text: 'Provide a prompt. Example: .sora anime girl with short blue hair' }, { quoted: msg });
             return;
         }
 
@@ -28,15 +28,15 @@ async function soraCommand(sock, chatId, message) {
             throw new Error('No videoUrl in API response');
         }
 
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             video: { url: videoUrl },
             mimetype: 'video/mp4',
             caption: `Prompt: ${input}`
-        }, { quoted: message });
+        }, { quoted: msg });
 
     } catch (error) {
         console.error('[SORA] error:', error?.message || error);
-        await sock.sendMessage(chatId, { text: 'Failed to generate video. Try a different prompt later.' }, { quoted: message });
+        await sock.sendMessage(from, { text: 'Failed to generate video. Try a different prompt later.' }, { quoted: msg });
     }
 }
 

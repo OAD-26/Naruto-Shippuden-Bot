@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-async function goodnightCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         const shizokeys = 'shizo';
         const res = await fetch(`https://shizoapi.onrender.com/api/texts/lovenight?apikey=${shizokeys}`);
@@ -13,10 +13,10 @@ async function goodnightCommand(sock, chatId, message) {
         const goodnightMessage = json.result;
 
         // Send the goodnight message
-        await sock.sendMessage(chatId, { text: goodnightMessage }, { quoted: message });
+        await sock.sendMessage(from, { text: goodnightMessage }, { quoted: msg });
     } catch (error) {
         console.error('Error in goodnight command:', error);
-        await sock.sendMessage(chatId, { text: '❌ Failed to get goodnight message. Please try again later!' }, { quoted: message });
+        await sock.sendMessage(from, { text: '❌ Failed to get goodnight message. Please try again later!' }, { quoted: msg });
     }
 }
 

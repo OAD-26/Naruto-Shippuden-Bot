@@ -12,12 +12,12 @@ async function emojimixCommand(sock, chatId, msg) {
         const args = text.split(' ').slice(1);
         
         if (!args[0]) {
-            await sock.sendMessage(chatId, { text: '🎴 Example: .emojimix 😎+🥰' });
+            await sock.sendMessage(from, { text: '🎴 Example: .emojimix 😎+🥰' });
             return;
         }
 
         if (!text.includes('+')) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: '✳️ Separate the emoji with a *+* sign\n\n📌 Example: \n*.emojimix* 😎+🥰' 
             });
             return;
@@ -32,7 +32,7 @@ async function emojimixCommand(sock, chatId, msg) {
         const data = await response.json();
 
         if (!data.results || data.results.length === 0) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: '❌ These emojis cannot be mixed! Try different ones.' 
             });
             return;
@@ -79,7 +79,7 @@ async function emojimixCommand(sock, chatId, msg) {
         const stickerBuffer = fs.readFileSync(outputFile);
 
         // Send the sticker
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             sticker: stickerBuffer 
         }, { quoted: msg });
 
@@ -93,7 +93,7 @@ async function emojimixCommand(sock, chatId, msg) {
 
     } catch (error) {
         console.error('Error in emojimix command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: '❌ Failed to mix emojis! Make sure you\'re using valid emojis.\n\nExample: .emojimix 😎+🥰' 
         });
     }

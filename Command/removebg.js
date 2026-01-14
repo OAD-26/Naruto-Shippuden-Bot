@@ -32,7 +32,7 @@ module.exports = {
     desc: 'Remove background from images',
     async exec(sock, message, args) {
         try {
-            const chatId = message.key.remoteJid;
+            const chatId = from;
             let imageUrl = null;
             
             // Check if args contain a URL
@@ -41,18 +41,18 @@ module.exports = {
                 if (isValidUrl(url)) {
                     imageUrl = url;
                 } else {
-                    return sock.sendMessage(chatId, { 
+                    return sock.sendMessage(from, { 
                         text: '❌ Invalid URL provided.\n\nUsage: `.removebg https://example.com/image.jpg`' 
-                    }, { quoted: message });
+                    }, { quoted: msg });
                 }
             } else {
                 // Try to get image from message or quoted message
                 imageUrl = await getQuotedOrOwnImageUrl(sock, message);
                 
                 if (!imageUrl) {
-                    return sock.sendMessage(chatId, { 
+                    return sock.sendMessage(from, { 
                         text: '📸 *Remove Background Command*\n\nUsage:\n• `.removebg <image_url>`\n• Reply to an image with `.removebg`\n• Send image with `.removebg`\n\nExample: `.removebg https://example.com/image.jpg`' 
-                    }, { quoted: message });
+                    }, { quoted: msg });
                 }
             }
 
@@ -70,10 +70,10 @@ module.exports = {
 
             if (response.status === 200 && response.data) {
                 // Send the processed image
-                await sock.sendMessage(chatId, {
+                await sock.sendMessage(from, {
                     image: response.data,
                     caption: '✨ *Background removed successfully!*\n\n𝗣𝗥𝗢𝗖𝗘𝗦𝗦𝗘𝗗 𝗕𝗬 𝗞𝗡𝗜𝗚𝗛𝗧-𝗕𝗢𝗧'
-                }, { quoted: message });
+                }, { quoted: msg });
             } else {
                 throw new Error('Failed to process image');
             }
@@ -95,9 +95,9 @@ module.exports = {
                 errorMessage = '🌐 Network error. Please check your connection.';
             }
             
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: errorMessage 
-            }, { quoted: message });
+            }, { quoted: msg });
         }
     }
 };

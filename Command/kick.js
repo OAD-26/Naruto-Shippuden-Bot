@@ -12,18 +12,18 @@ async function kickCommand(sock, chatId, senderId, mentionedJids, message) {
             const errorMessage = "🍥 *Dattebayo!* I can't do that if I'm not an admin! Please make me an admin first! 🔥";
             
             if (fs.existsSync(imagePath)) {
-                await sock.sendMessage(chatId, { 
+                await sock.sendMessage(from, { 
                     image: fs.readFileSync(imagePath), 
                     caption: errorMessage 
-                }, { quoted: message });
+                }, { quoted: msg });
             } else {
-                await sock.sendMessage(chatId, { text: errorMessage }, { quoted: message });
+                await sock.sendMessage(from, { text: errorMessage }, { quoted: msg });
             }
             return;
         }
 
         if (!isSenderAdmin) {
-            await sock.sendMessage(chatId, { text: 'Only group admins can use the kick command.' }, { quoted: message });
+            await sock.sendMessage(from, { text: 'Only group admins can use the kick command.' }, { quoted: msg });
             return;
         }
     }
@@ -38,9 +38,9 @@ async function kickCommand(sock, chatId, senderId, mentionedJids, message) {
     }
     
     if (usersToKick.length === 0) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: 'Please mention the user or reply to their message to kick!'
-        }, { quoted: message });
+        }, { quoted: msg });
         return;
     }
 
@@ -114,9 +114,9 @@ async function kickCommand(sock, chatId, senderId, mentionedJids, message) {
     });
 
     if (isTryingToKickBot) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: "I can't kick myself🤖"
-        }, { quoted: message });
+        }, { quoted: msg });
         return;
     }
 
@@ -131,20 +131,20 @@ async function kickCommand(sock, chatId, senderId, mentionedJids, message) {
         const kickMessage = `${usernames.join(', ')} has been kicked successfully! 🍥 Dattebayo! 😤`;
 
         if (fs.existsSync(imagePath)) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 image: fs.readFileSync(imagePath), 
                 caption: kickMessage,
                 mentions: usersToKick
             });
         } else {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: kickMessage,
                 mentions: usersToKick
             });
         }
     } catch (error) {
         console.error('Error in kick command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: 'Failed to kick user(s)!'
         });
     }

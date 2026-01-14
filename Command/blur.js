@@ -2,7 +2,7 @@ const { downloadMediaMessage } = require('@whiskeysockets/baileys');
 const sharp = require('sharp');
 
 module.exports = async (sock, msg, config) => {
-    const jid = msg.key.remoteJid;
+    const jid = from;
     const quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
     const imageMsg = quoted?.imageMessage || msg.message?.imageMessage;
 

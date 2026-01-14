@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 module.exports = async (sock, msg, config) => {
-    const jid = msg.key.remoteJid;
+    const jid = from;
     try {
         const res = await axios.get('https://api.quotable.io/random').catch(() => ({ data: { content: "Life is what happens when you're busy making other plans.", author: "John Lennon" } }));
         const quote = res.data;

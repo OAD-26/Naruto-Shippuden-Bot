@@ -174,9 +174,9 @@ async function updateViaZip(sock, chatId, message, zipOverride) {
     return { copiedFiles: copied };
 }
 
-async function restartProcess(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
-        await sock.sendMessage(chatId, { text: '✅ Update complete! Restarting…' }, { quoted: message });
+        await sock.sendMessage(from, { text: '✅ Update complete! Restarting…' }, { quoted: msg });
     } catch {}
     try {
         // Preferred: PM2
@@ -191,16 +191,16 @@ async function restartProcess(sock, chatId, message) {
 }
 
 async function updateCommand(sock, chatId, message, zipOverride) {
-    const senderId = message.key.participant || message.key.remoteJid;
+    const senderId = message.key.participant || from;
     const isOwner = await isOwnerOrSudo(senderId, sock, chatId);
     
     if (!message.key.fromMe && !isOwner) {
-        await sock.sendMessage(chatId, { text: 'Only bot owner or sudo can use .update' }, { quoted: message });
+        await sock.sendMessage(from, { text: 'Only bot owner or sudo can use .update' }, { quoted: msg });
         return;
     }
     try {
         // Minimal UX
-        await sock.sendMessage(chatId, { text: '🔄 Updating the bot, please wait…' }, { quoted: message });
+        await sock.sendMessage(from, { text: '🔄 Updating the bot, please wait…' }, { quoted: msg });
         if (await hasGitRepo()) {
             // silent
             const { oldRev, newRev, alreadyUpToDate, commits, files } = await updateViaGit();
@@ -215,14 +215,14 @@ async function updateCommand(sock, chatId, message, zipOverride) {
         }
         try {
             const v = require('../settings').version || '';
-            await sock.sendMessage(chatId, { text: `✅ Update done. Restarting…` }, { quoted: message });
+            await sock.sendMessage(from, { text: `✅ Update done. Restarting…` }, { quoted: msg });
         } catch {
-            await sock.sendMessage(chatId, { text: '✅ Restared Successfully\n Type .ping to check latest version.' }, { quoted: message });
+            await sock.sendMessage(from, { text: '✅ Restared Successfully\n Type .ping to check latest version.' }, { quoted: msg });
         }
         await restartProcess(sock, chatId, message);
     } catch (err) {
         console.error('Update failed:', err);
-        await sock.sendMessage(chatId, { text: `❌ Update failed:\n${String(err.message || err)}` }, { quoted: message });
+        await sock.sendMessage(from, { text: `❌ Update failed:\n${String(err.message || err)}` }, { quoted: msg });
     }
 }
 

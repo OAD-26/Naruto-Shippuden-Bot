@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-async function shayariCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         const response = await fetch('https://shizoapi.onrender.com/api/texts/shayari?apikey=shizo');
         const data = await response.json();
@@ -14,16 +14,16 @@ async function shayariCommand(sock, chatId, message) {
             { buttonId: '.roseday', buttonText: { displayText: '🌹 RoseDay' }, type: 1 }
         ];
 
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: data.result,
             buttons: buttons,
             headerType: 1
-        }, { quoted: message });
+        }, { quoted: msg });
     } catch (error) {
         console.error('Error in shayari command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: '❌ Failed to fetch shayari. Please try again later.',
-        }, { quoted: message });
+        }, { quoted: msg });
     }
 }
 

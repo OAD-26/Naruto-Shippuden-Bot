@@ -49,11 +49,11 @@ async function clearTmpDirectory() {
 // Function to handle manual command
 async function clearTmpCommand(sock, chatId, msg) {
     try {
-        const senderId = msg.key.participant || msg.key.remoteJid;
+        const senderId = msg.key.participant || from;
         const isOwner = await isOwnerOrSudo(senderId, sock, chatId);
         
         if (!msg.key.fromMe && !isOwner) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: '❌ This command is only available for the owner!' 
             });
             return;
@@ -62,18 +62,18 @@ async function clearTmpCommand(sock, chatId, msg) {
         const result = await clearTmpDirectory();
         
         if (result.success) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: `✅ ${result.message}` 
             });
         } else {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: `❌ ${result.message}` 
             });
         }
 
     } catch (error) {
         console.error('Error in cleartmp command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: '❌ Failed to clear temporary files!' 
         });
     }

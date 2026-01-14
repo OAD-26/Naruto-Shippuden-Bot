@@ -31,7 +31,7 @@ const compliments = [
     "You make the world a better place just by being in it."
 ];
 
-async function complimentCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         if (!message || !chatId) {
             console.log('Invalid message or chatId:', { message, chatId });
@@ -50,7 +50,7 @@ async function complimentCommand(sock, chatId, message) {
         }
         
         if (!userToCompliment) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: 'Please mention someone or reply to their message to compliment them!'
             });
             return;
@@ -61,7 +61,7 @@ async function complimentCommand(sock, chatId, message) {
         // Add delay to avoid rate limiting
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: `Hey @${userToCompliment.split('@')[0]}, ${compliment}`,
             mentions: [userToCompliment]
         });
@@ -70,7 +70,7 @@ async function complimentCommand(sock, chatId, message) {
         if (error.data === 429) {
             await new Promise(resolve => setTimeout(resolve, 2000));
             try {
-                await sock.sendMessage(chatId, { 
+                await sock.sendMessage(from, { 
                     text: 'Please try again in a few seconds.'
                 });
             } catch (retryError) {
@@ -78,7 +78,7 @@ async function complimentCommand(sock, chatId, message) {
             }
         } else {
             try {
-                await sock.sendMessage(chatId, { 
+                await sock.sendMessage(from, { 
                     text: 'An error occurred while sending the compliment.'
                 });
             } catch (sendError) {

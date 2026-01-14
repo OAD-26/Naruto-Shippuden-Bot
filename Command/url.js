@@ -47,14 +47,14 @@ async function getQuotedMediaBufferAndExt(message) {
     return getMediaBufferAndExt({ message: quoted });
 }
 
-async function urlCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         // Prefer current message media, else quoted media
         let media = await getMediaBufferAndExt(message);
         if (!media) media = await getQuotedMediaBufferAndExt(message);
 
         if (!media) {
-            await sock.sendMessage(chatId, { text: 'Send or reply to a media (image, video, audio, sticker, document) to get a URL.' }, { quoted: message });
+            await sock.sendMessage(from, { text: 'Send or reply to a media (image, video, audio, sticker, document) to get a URL.' }, { quoted: msg });
             return;
         }
 
@@ -85,14 +85,14 @@ async function urlCommand(sock, chatId, message) {
         }
 
         if (!url) {
-            await sock.sendMessage(chatId, { text: 'Failed to upload media.' }, { quoted: message });
+            await sock.sendMessage(from, { text: 'Failed to upload media.' }, { quoted: msg });
             return;
         }
 
-        await sock.sendMessage(chatId, { text: `URL: ${url}` }, { quoted: message });
+        await sock.sendMessage(from, { text: `URL: ${url}` }, { quoted: msg });
     } catch (error) {
         console.error('[URL] error:', error?.message || error);
-        await sock.sendMessage(chatId, { text: 'Failed to convert media to URL.' }, { quoted: message });
+        await sock.sendMessage(from, { text: 'Failed to convert media to URL.' }, { quoted: msg });
     }
 }
 

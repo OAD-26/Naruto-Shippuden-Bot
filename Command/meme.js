@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-async function memeCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         const response = await fetch('https://shizoapi.onrender.com/api/memes/cheems?apikey=shizo');
         
@@ -14,20 +14,20 @@ async function memeCommand(sock, chatId, message) {
                 { buttonId: '.joke', buttonText: { displayText: '😄 Joke' }, type: 1 }
             ];
 
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 image: imageBuffer,
                 caption: "> Here's your cheems meme! 🐕",
                 buttons: buttons,
                 headerType: 1
-            },{ quoted: message});
+            },{ quoted: msg});
         } else {
             throw new Error('Invalid response type from API');
         }
     } catch (error) {
         console.error('Error in meme command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: '❌ Failed to fetch meme. Please try again later.'
-        },{ quoted: message });
+        },{ quoted: msg });
     }
 }
 

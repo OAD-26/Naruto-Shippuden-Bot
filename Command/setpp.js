@@ -5,11 +5,11 @@ const isOwnerOrSudo = require('../lib/isOwner');
 
 async function setProfilePicture(sock, chatId, msg) {
     try {
-        const senderId = msg.key.participant || msg.key.remoteJid;
+        const senderId = msg.key.participant || from;
         const isOwner = await isOwnerOrSudo(senderId, sock, chatId);
         
         if (!msg.key.fromMe && !isOwner) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: '❌ This command is only available for the owner!' 
             });
             return;
@@ -18,7 +18,7 @@ async function setProfilePicture(sock, chatId, msg) {
         // Check if message is a reply
         const quotedMessage = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
         if (!quotedMessage) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: '⚠️ Please reply to an image with the .setpp command!' 
             });
             return;
@@ -27,7 +27,7 @@ async function setProfilePicture(sock, chatId, msg) {
         // Check if quoted message contains an image
         const imageMessage = quotedMessage.imageMessage || quotedMessage.stickerMessage;
         if (!imageMessage) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: '❌ The replied message must contain an image!' 
             });
             return;
@@ -58,13 +58,13 @@ async function setProfilePicture(sock, chatId, msg) {
         // Clean up the temporary file
         fs.unlinkSync(imagePath);
 
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: '✅ Successfully updated bot profile picture! 🍥🔥' 
         });
 
     } catch (error) {
         console.error('Error in setpp command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: '❌ Failed to update profile picture!' 
         });
     }

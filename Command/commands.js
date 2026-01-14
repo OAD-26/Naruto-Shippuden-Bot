@@ -15,7 +15,7 @@ const jokes = [
 module.exports = {
     name: "commands",
     execute: async (sock, msg, args, groupAdmins) => {
-        const sender = msg.key.participant || msg.key.remoteJid;
+        const sender = msg.key.participant || from;
         const isOwner = ownerNumbers.includes(sender.split("@")[0]);
         const isAdmin = groupAdmins.includes(sender.split("@")[0]) || isOwner;
 
@@ -27,57 +27,57 @@ module.exports = {
             // ADMIN COMMANDS 🛡️
             // -----------------------------
             case "kick":
-                if (!isAdmin) return sock.sendMessage(msg.key.remoteJid, { text: "❌ You are not an admin! 🛑" });
-                if (!target) return sock.sendMessage(msg.key.remoteJid, { text: "⚠️ Please provide a number to kick 👢" });
+                if (!isAdmin) return sock.sendMessage(from, { text: "❌ You are not an admin! 🛑" });
+                if (!target) return sock.sendMessage(from, { text: "⚠️ Please provide a number to kick 👢" });
                 // Kick logic here
-                await sock.sendMessage(msg.key.remoteJid, { text: `👢 User ${target} has been kicked by ${sender.split("@")[0]}!` });
+                await sock.sendMessage(from, { text: `👢 User ${target} has been kicked by ${sender.split("@")[0]}!` });
                 break;
 
             case "promote":
-                if (!isAdmin) return sock.sendMessage(msg.key.remoteJid, { text: "❌ Only admins can promote ⬆️" });
-                if (!target) return sock.sendMessage(msg.key.remoteJid, { text: "⚠️ Please provide a number to promote ⬆️" });
+                if (!isAdmin) return sock.sendMessage(from, { text: "❌ Only admins can promote ⬆️" });
+                if (!target) return sock.sendMessage(from, { text: "⚠️ Please provide a number to promote ⬆️" });
                 // Promote logic here
-                await sock.sendMessage(msg.key.remoteJid, { text: `⬆️ User ${target} is now an admin 👑` });
+                await sock.sendMessage(from, { text: `⬆️ User ${target} is now an admin 👑` });
                 break;
 
             case "demote":
-                if (!isAdmin) return sock.sendMessage(msg.key.remoteJid, { text: "❌ Only admins can demote ⬇️" });
-                if (!target) return sock.sendMessage(msg.key.remoteJid, { text: "⚠️ Please provide a number to demote ⬇️" });
+                if (!isAdmin) return sock.sendMessage(from, { text: "❌ Only admins can demote ⬇️" });
+                if (!target) return sock.sendMessage(from, { text: "⚠️ Please provide a number to demote ⬇️" });
                 // Demote logic here
-                await sock.sendMessage(msg.key.remoteJid, { text: `⬇️ User ${target} has been demoted 😔` });
+                await sock.sendMessage(from, { text: `⬇️ User ${target} has been demoted 😔` });
                 break;
 
             case "list":
                 let adminList = groupAdmins.concat(ownerNumbers.filter(n => !groupAdmins.includes(n)));
                 let msgText = "🛡️ *Admin List* 🛡️\n\n";
                 adminList.forEach((num, idx) => { msgText += `${idx + 1}. ${num}\n`; });
-                await sock.sendMessage(msg.key.remoteJid, { text: msgText });
+                await sock.sendMessage(from, { text: msgText });
                 break;
 
             // -----------------------------
             // GROUP COMMANDS 👥
             // -----------------------------
             case "groupid":
-                await sock.sendMessage(msg.key.remoteJid, { text: `🆔 Group ID: ${msg.key.remoteJid}` });
+                await sock.sendMessage(from, { text: `🆔 Group ID: ${from}` });
                 break;
 
             case "antilink":
-                if (!isAdmin) return sock.sendMessage(msg.key.remoteJid, { text: "❌ Only admins can toggle anti-link 🚫" });
+                if (!isAdmin) return sock.sendMessage(from, { text: "❌ Only admins can toggle anti-link 🚫" });
                 // Toggle anti-link logic here
-                await sock.sendMessage(msg.key.remoteJid, { text: "🔗 Anti-link has been toggled ✅" });
+                await sock.sendMessage(from, { text: "🔗 Anti-link has been toggled ✅" });
                 break;
 
             // -----------------------------
             // GAMES 🎮
             // -----------------------------
             case "guess":
-                if (!args[1]) return sock.sendMessage(msg.key.remoteJid, { text: "❓ Usage: !commands guess <number 1-10> 🎯" });
+                if (!args[1]) return sock.sendMessage(from, { text: "❓ Usage: !commands guess <number 1-10> 🎯" });
                 const userGuess = parseInt(args[1]);
                 const correctNumber = Math.floor(Math.random() * 10) + 1;
                 if (userGuess === correctNumber) {
-                    await sock.sendMessage(msg.key.remoteJid, { text: `🎉 Congratulations! You guessed the number ${correctNumber}! 🥳` });
+                    await sock.sendMessage(from, { text: `🎉 Congratulations! You guessed the number ${correctNumber}! 🥳` });
                 } else {
-                    await sock.sendMessage(msg.key.remoteJid, { text: `😢 Wrong guess! The correct number was ${correctNumber}. Try again! 🎯` });
+                    await sock.sendMessage(from, { text: `😢 Wrong guess! The correct number was ${correctNumber}. Try again! 🎯` });
                 }
                 break;
 
@@ -86,11 +86,11 @@ module.exports = {
             // -----------------------------
             case "joke":
                 const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
-                await sock.sendMessage(msg.key.remoteJid, { text: randomJoke });
+                await sock.sendMessage(from, { text: randomJoke });
                 break;
 
             default:
-                await sock.sendMessage(msg.key.remoteJid, {
+                await sock.sendMessage(from, {
                     text:
 `❓ Unknown command!
 

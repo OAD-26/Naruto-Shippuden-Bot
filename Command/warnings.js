@@ -15,14 +15,14 @@ async function warningsCommand(sock, chatId, mentionedJidList) {
     const warnings = loadWarnings();
 
     if (mentionedJidList.length === 0) {
-        await sock.sendMessage(chatId, { text: 'Please mention a user to check warnings.' });
+        await sock.sendMessage(from, { text: 'Please mention a user to check warnings.' });
         return;
     }
 
     const userToCheck = mentionedJidList[0];
     const warningCount = warnings[userToCheck] || 0;
 
-    await sock.sendMessage(chatId, { text: `User has ${warningCount} warning(s).` });
+    await sock.sendMessage(from, { text: `User has ${warningCount} warning(s).` });
 }
 
 module.exports = warningsCommand;

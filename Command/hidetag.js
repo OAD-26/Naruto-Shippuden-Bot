@@ -18,12 +18,12 @@ async function hideTagCommand(sock, chatId, senderId, messageText, replyMessage,
     const { isSenderAdmin, isBotAdmin } = await isAdmin(sock, chatId, senderId);
 
     if (!isBotAdmin) {
-        await sock.sendMessage(chatId, { text: 'Please make the bot an admin first.' }, { quoted: message });
+        await sock.sendMessage(from, { text: 'Please make the bot an admin first.' }, { quoted: msg });
         return;
     }
 
     if (!isSenderAdmin) {
-        await sock.sendMessage(chatId, { text: 'Only admins can use the .hidetag command.' }, { quoted: message });
+        await sock.sendMessage(from, { text: 'Only admins can use the .hidetag command.' }, { quoted: msg });
         return;
     }
 
@@ -47,10 +47,10 @@ async function hideTagCommand(sock, chatId, senderId, messageText, replyMessage,
         }
 
         if (Object.keys(content).length > 0) {
-            await sock.sendMessage(chatId, content);
+            await sock.sendMessage(from, content);
         }
     } else {
-        await sock.sendMessage(chatId, { text: messageText || 'Tagged members (excluding admins).', mentions: nonAdmins });
+        await sock.sendMessage(from, { text: messageText || 'Tagged members (excluding admins).', mentions: nonAdmins });
     }
 }
 

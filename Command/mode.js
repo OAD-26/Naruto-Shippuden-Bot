@@ -3,8 +3,8 @@ const ownerNumber = '2349138385352@s.whatsapp.net'; // Your WhatsApp number in i
 module.exports = {
     name: 'mode',
     description: 'Change bot mode: public/private (owner only)',
-    execute: async (sock, msg, text) => {
-        const jid = msg.key.remoteJid;
+    execute: async (sock, from, msg, args) => {
+        const jid = from;
 
         // Check if sender is owner
         if (msg.key.participant !== ownerNumber) {

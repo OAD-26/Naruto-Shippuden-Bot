@@ -1,15 +1,15 @@
 const axios = require('axios');
 const fetch = require('node-fetch');
 
-async function aiCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         const text = message.message?.conversation || message.message?.extendedTextMessage?.text;
         
         if (!text) {
-            return await sock.sendMessage(chatId, { 
+            return await sock.sendMessage(from, { 
                 text: "Please provide a question after .gpt or .gemini\n\nExample: .gpt write a basic html code"
             }, {
-                quoted: message
+                quoted: msg
             });
         }
 
@@ -19,14 +19,14 @@ async function aiCommand(sock, chatId, message) {
         const query = parts.slice(1).join(' ').trim();
 
         if (!query) {
-            return await sock.sendMessage(chatId, { 
+            return await sock.sendMessage(from, { 
                 text: "Please provide a question after .gpt or .gemini"
             }, {quoted:message});
         }
 
         try {
             // Show processing message
-            await sock.sendMessage(chatId, {
+            await sock.sendMessage(from, {
                 react: { text: '🤖', key: message.key }
             });
 
@@ -36,10 +36,10 @@ async function aiCommand(sock, chatId, message) {
                 
                 if (response.data && response.data.status && response.data.result) {
                     const answer = response.data.result;
-                    await sock.sendMessage(chatId, {
+                    await sock.sendMessage(from, {
                         text: answer
                     }, {
-                        quoted: message
+                        quoted: msg
                     });
                     
                 } else {
@@ -62,10 +62,10 @@ async function aiCommand(sock, chatId, message) {
 
                         if (data.message || data.data || data.answer || data.result) {
                             const answer = data.message || data.data || data.answer || data.result;
-                            await sock.sendMessage(chatId, {
+                            await sock.sendMessage(from, {
                                 text: answer
                             }, {
-                                quoted: message
+                                quoted: msg
                             });
                             
                             return;
@@ -78,26 +78,26 @@ async function aiCommand(sock, chatId, message) {
             }
         } catch (error) {
             console.error('API Error:', error);
-            await sock.sendMessage(chatId, {
+            await sock.sendMessage(from, {
                 text: "❌ Failed to get response. Please try again later.",
                 contextInfo: {
-                    mentionedJid: [message.key.participant || message.key.remoteJid],
+                    mentionedJid: [message.key.participant || from],
                     quotedMessage: message.message
                 }
             }, {
-                quoted: message
+                quoted: msg
             });
         }
     } catch (error) {
         console.error('AI Command Error:', error);
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             text: "❌ An error occurred. Please try again later.",
             contextInfo: {
-                mentionedJid: [message.key.participant || message.key.remoteJid],
+                mentionedJid: [message.key.participant || from],
                 quotedMessage: message.message
             }
         }, {
-            quoted: message
+            quoted: msg
         });
     }
 }

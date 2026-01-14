@@ -19,13 +19,13 @@ function initConfig() {
 }
 
 // Toggle autotyping feature
-async function autotypingCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
-        const senderId = message.key.participant || message.key.remoteJid;
+        const senderId = message.key.participant || from;
         const isOwner = await isOwnerOrSudo(senderId, sock, chatId);
         
         if (!message.key.fromMe && !isOwner) {
-            await sock.sendMessage(chatId, {
+            await sock.sendMessage(from, {
                 text: '❌ This command is only available for the owner!',
                 contextInfo: {
                     forwardingScore: 1,
@@ -56,7 +56,7 @@ async function autotypingCommand(sock, chatId, message) {
             } else if (action === 'off' || action === 'disable') {
                 config.enabled = false;
             } else {
-                await sock.sendMessage(chatId, {
+                await sock.sendMessage(from, {
                     text: '❌ Invalid option! Use: .autotyping on/off',
                     contextInfo: {
                         forwardingScore: 1,
@@ -79,7 +79,7 @@ async function autotypingCommand(sock, chatId, message) {
         fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
         
         // Send confirmation message
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             text: `✅ Auto-typing has been ${config.enabled ? 'enabled' : 'disabled'}!`,
             contextInfo: {
                 forwardingScore: 1,
@@ -94,7 +94,7 @@ async function autotypingCommand(sock, chatId, message) {
         
     } catch (error) {
         console.error('Error in autotyping command:', error);
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             text: '❌ Error processing command!',
             contextInfo: {
                 forwardingScore: 1,

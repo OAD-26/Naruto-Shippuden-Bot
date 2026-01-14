@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 
-async function githubCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
   try {
     const res = await fetch('https://api.github.com/repos/mruniquehacker/Knightbot-md');
     if (!res.ok) throw new Error('Error fetching repository data');
@@ -24,9 +24,9 @@ async function githubCommand(sock, chatId, message) {
     const imgPath = path.join(__dirname, '../Assets/Naruto-Shippuden-Bot_Avatar.png');
     const imgBuffer = fs.readFileSync(imgPath);
 
-    await sock.sendMessage(chatId, { image: imgBuffer, caption: txt }, { quoted: message });
+    await sock.sendMessage(from, { image: imgBuffer, caption: txt }, { quoted: msg });
   } catch (error) {
-    await sock.sendMessage(chatId, { text: '❌ Error fetching repository information.' }, { quoted: message });
+    await sock.sendMessage(from, { text: '❌ Error fetching repository information.' }, { quoted: msg });
   }
 }
 

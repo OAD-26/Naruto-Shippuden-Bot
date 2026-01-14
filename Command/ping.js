@@ -20,19 +20,19 @@ function formatTime(seconds) {
     return time.trim();
 }
 
-async function pingCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         const imagePath = path.join(__dirname, '../Assets/Naruto-Shippuden-Bot_Avatar.png');
         const start = Date.now();
         
         if (fs.existsSync(imagePath)) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 video: fs.readFileSync(imagePath), 
                 gifPlayback: true, 
                 caption: 'Pong!' 
-            }, { quoted: message });
+            }, { quoted: msg });
         } else {
-            await sock.sendMessage(chatId, { text: 'Pong!' }, { quoted: message });
+            await sock.sendMessage(from, { text: 'Pong!' }, { quoted: msg });
         }
 
         const end = Date.now();
@@ -48,11 +48,11 @@ async function pingCommand(sock, chatId, message) {
 ┃ 🔖 Version  : v${settings.version}
 ┗━━━━━━━━━━━━━━━━━━━┛`.trim();
 
-        await sock.sendMessage(chatId, { text: botInfo},{ quoted: message });
+        await sock.sendMessage(from, { text: botInfo},{ quoted: msg });
 
     } catch (error) {
         console.error('Error in ping command:', error);
-        await sock.sendMessage(chatId, { text: '❌ Failed to get bot status.' });
+        await sock.sendMessage(from, { text: '❌ Failed to get bot status.' });
     }
 }
 

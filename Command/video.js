@@ -46,14 +46,14 @@ async function getOkatsuVideoByUrl(youtubeUrl) {
     throw new Error('Okatsu ytmp4 returned no mp4');
 }
 
-async function videoCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         const text = message.message?.conversation || message.message?.extendedTextMessage?.text;
         const searchQuery = text.split(' ').slice(1).join(' ').trim();
         
         
         if (!searchQuery) {
-            await sock.sendMessage(chatId, { text: 'What video do you want to download?' }, { quoted: message });
+            await sock.sendMessage(from, { text: 'What video do you want to download?' }, { quoted: msg });
             return;
         }
 
@@ -67,7 +67,7 @@ async function videoCommand(sock, chatId, message) {
             // Search YouTube for the video
             const { videos } = await yts(searchQuery);
             if (!videos || videos.length === 0) {
-                await sock.sendMessage(chatId, { text: 'No videos found!' }, { quoted: message });
+                await sock.sendMessage(from, { text: 'No videos found!' }, { quoted: msg });
                 return;
             }
             videoUrl = videos[0].url;
@@ -81,10 +81,10 @@ async function videoCommand(sock, chatId, message) {
             const thumb = videoThumbnail || (ytId ? `https://i.ytimg.com/vi/${ytId}/sddefault.jpg` : undefined);
             const captionTitle = videoTitle || searchQuery;
             if (thumb) {
-                await sock.sendMessage(chatId, {
+                await sock.sendMessage(from, {
                     image: { url: thumb },
                     caption: `*${captionTitle}*\nDownloading...`
-                }, { quoted: message });
+                }, { quoted: msg });
             }
         } catch (e) { console.error('[VIDEO] thumb error:', e?.message || e); }
         
@@ -92,7 +92,7 @@ async function videoCommand(sock, chatId, message) {
         // Validate YouTube URL
         let urls = videoUrl.match(/(?:https?:\/\/)?(?:youtu\.be\/|(?:www\.|m\.)?youtube\.com\/(?:watch\?v=|v\/|embed\/|shorts\/|playlist\?list=)?)([a-zA-Z0-9_-]{11})/gi);
         if (!urls) {
-            await sock.sendMessage(chatId, { text: 'This is not a valid YouTube link!' }, { quoted: message });
+            await sock.sendMessage(from, { text: 'This is not a valid YouTube link!' }, { quoted: msg });
             return;
         }
 
@@ -123,17 +123,17 @@ async function videoCommand(sock, chatId, message) {
         }
 
         // Send video directly
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             video: { url: videoData.download },
             mimetype: 'video/mp4',
             fileName: `${videoData.title || 'video'}.mp4`,
             caption: `🍥 *${videoData.title || 'Video'}* 🌀\n\n> *_Downloaded by Naruto-Shippuden-Bot_*`
-        }, { quoted: message });
+        }, { quoted: msg });
 
 
     } catch (error) {
         console.error('[VIDEO] Command Error:', error?.message || error);
-        await sock.sendMessage(chatId, { text: 'Download failed: ' + (error?.message || 'Unknown error') }, { quoted: message });
+        await sock.sendMessage(from, { text: 'Download failed: ' + (error?.message || 'Unknown error') }, { quoted: msg });
     }
 }
 

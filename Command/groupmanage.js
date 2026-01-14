@@ -5,18 +5,18 @@ const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
 async function ensureGroupAndAdmin(sock, chatId, senderId) {
     const isGroup = chatId.endsWith('@g.us');
     if (!isGroup) {
-        await sock.sendMessage(chatId, { text: 'This command can only be used in groups.' });
+        await sock.sendMessage(from, { text: 'This command can only be used in groups.' });
         return { ok: false };
     }
     // Check admin status of sender and bot
     const isAdmin = require('../lib/isAdmin');
     const adminStatus = await isAdmin(sock, chatId, senderId);
     if (!adminStatus.isBotAdmin) {
-        await sock.sendMessage(chatId, { text: 'Please make the bot an admin first.' });
+        await sock.sendMessage(from, { text: 'Please make the bot an admin first.' });
         return { ok: false };
     }
     if (!adminStatus.isSenderAdmin) {
-        await sock.sendMessage(chatId, { text: 'Only group admins can use this command.' });
+        await sock.sendMessage(from, { text: 'Only group admins can use this command.' });
         return { ok: false };
     }
     return { ok: true };
@@ -27,14 +27,14 @@ async function setGroupDescription(sock, chatId, senderId, text, message) {
     if (!check.ok) return;
     const desc = (text || '').trim();
     if (!desc) {
-        await sock.sendMessage(chatId, { text: 'Usage: .setgdesc <description>' }, { quoted: message });
+        await sock.sendMessage(from, { text: 'Usage: .setgdesc <description>' }, { quoted: msg });
         return;
     }
     try {
         await sock.groupUpdateDescription(chatId, desc);
-        await sock.sendMessage(chatId, { text: '✅ Group description updated.' }, { quoted: message });
+        await sock.sendMessage(from, { text: '✅ Group description updated.' }, { quoted: msg });
     } catch (e) {
-        await sock.sendMessage(chatId, { text: '❌ Failed to update group description.' }, { quoted: message });
+        await sock.sendMessage(from, { text: '❌ Failed to update group description.' }, { quoted: msg });
     }
 }
 
@@ -43,14 +43,14 @@ async function setGroupName(sock, chatId, senderId, text, message) {
     if (!check.ok) return;
     const name = (text || '').trim();
     if (!name) {
-        await sock.sendMessage(chatId, { text: 'Usage: .setgname <new name>' }, { quoted: message });
+        await sock.sendMessage(from, { text: 'Usage: .setgname <new name>' }, { quoted: msg });
         return;
     }
     try {
         await sock.groupUpdateSubject(chatId, name);
-        await sock.sendMessage(chatId, { text: '✅ Group name updated.' }, { quoted: message });
+        await sock.sendMessage(from, { text: '✅ Group name updated.' }, { quoted: msg });
     } catch (e) {
-        await sock.sendMessage(chatId, { text: '❌ Failed to update group name.' }, { quoted: message });
+        await sock.sendMessage(from, { text: '❌ Failed to update group name.' }, { quoted: msg });
     }
 }
 
@@ -61,7 +61,7 @@ async function setGroupPhoto(sock, chatId, senderId, message) {
     const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
     const imageMessage = quoted?.imageMessage || quoted?.stickerMessage;
     if (!imageMessage) {
-        await sock.sendMessage(chatId, { text: 'Reply to an image/sticker with .setgpp' }, { quoted: message });
+        await sock.sendMessage(from, { text: 'Reply to an image/sticker with .setgpp' }, { quoted: msg });
         return;
     }
     try {
@@ -77,9 +77,9 @@ async function setGroupPhoto(sock, chatId, senderId, message) {
 
         await sock.updateProfilePicture(chatId, { url: imgPath });
         try { fs.unlinkSync(imgPath); } catch (_) {}
-        await sock.sendMessage(chatId, { text: '✅ Group profile photo updated.' }, { quoted: message });
+        await sock.sendMessage(from, { text: '✅ Group profile photo updated.' }, { quoted: msg });
     } catch (e) {
-        await sock.sendMessage(chatId, { text: '❌ Failed to update group profile photo.' }, { quoted: message });
+        await sock.sendMessage(from, { text: '❌ Failed to update group profile photo.' }, { quoted: msg });
     }
 }
 

@@ -81,7 +81,7 @@ async function sendAnimu(sock, chatId, message, type) {
                 await sock.sendMessage(
                     chatId,
                     { sticker: stickerBuf },
-                    { quoted: message }
+                    { quoted: msg }
                 );
                 return;
             } catch (error) {
@@ -94,7 +94,7 @@ async function sendAnimu(sock, chatId, message, type) {
             await sock.sendMessage(
                 chatId,
                 { image: { url: link }, caption: `anime: ${type}` },
-                { quoted: message }
+                { quoted: msg }
             );
             return;
         } catch {}
@@ -103,7 +103,7 @@ async function sendAnimu(sock, chatId, message, type) {
         await sock.sendMessage(
             chatId,
             { text: data.quote },
-            { quoted: message }
+            { quoted: msg }
         );
         return;
     }
@@ -111,11 +111,11 @@ async function sendAnimu(sock, chatId, message, type) {
     await sock.sendMessage(
         chatId,
         { text: '❌ Failed to fetch animu.' },
-        { quoted: message }
+        { quoted: msg }
     );
 }
 
-async function animeCommand(sock, chatId, message, args) {
+async function(sock, from, msg, args) {
     const subArg = args && args[0] ? args[0] : '';
     const sub = normalizeType(subArg);
 
@@ -129,22 +129,22 @@ async function animeCommand(sock, chatId, message, args) {
             try {
                 const res = await axios.get(ANIMU_BASE);
                 const apiTypes = res.data && res.data.types ? res.data.types.map(s => s.replace('/animu/', '')).join(', ') : supported.join(', ');
-                await sock.sendMessage(chatId, { text: `Usage: .animu <type>\nTypes: ${apiTypes}` }, { quoted: message });
+                await sock.sendMessage(from, { text: `Usage: .animu <type>\nTypes: ${apiTypes}` }, { quoted: msg });
             } catch {
-                await sock.sendMessage(chatId, { text: `Usage: .animu <type>\nTypes: ${supported.join(', ')}` }, { quoted: message });
+                await sock.sendMessage(from, { text: `Usage: .animu <type>\nTypes: ${supported.join(', ')}` }, { quoted: msg });
             }
             return;
         }
 
         if (!supported.includes(sub)) {
-            await sock.sendMessage(chatId, { text: `❌ Unsupported type: ${sub}. Try one of: ${supported.join(', ')}` }, { quoted: message });
+            await sock.sendMessage(from, { text: `❌ Unsupported type: ${sub}. Try one of: ${supported.join(', ')}` }, { quoted: msg });
             return;
         }
 
         await sendAnimu(sock, chatId, message, sub);
     } catch (err) {
         console.error('Error in animu command:', err);
-        await sock.sendMessage(chatId, { text: '❌ An error occurred while fetching animu.' }, { quoted: message });
+        await sock.sendMessage(from, { text: '❌ An error occurred while fetching animu.' }, { quoted: msg });
     }
 }
 

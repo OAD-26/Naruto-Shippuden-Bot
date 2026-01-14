@@ -4,13 +4,13 @@ const path = require('path');
 async function setBotName(sock, chatId, msg, args) {
     try {
         if (!msg.key.fromMe) {
-            await sock.sendMessage(chatId, { text: '❌ This command is only available for the owner! 👑' });
+            await sock.sendMessage(from, { text: '❌ This command is only available for the owner! 👑' });
             return;
         }
 
         const newName = args.join(' ');
         if (!newName) {
-            await sock.sendMessage(chatId, { text: '⚠️ Please provide a new name for the bot! 🍥' });
+            await sock.sendMessage(from, { text: '⚠️ Please provide a new name for the bot! 🍥' });
             return;
         }
 
@@ -21,11 +21,11 @@ async function setBotName(sock, chatId, msg, args) {
         settings = settings.replace(/botName:\s*".*?"/, `botName: "${newName}"`);
         fs.writeFileSync(settingsPath, settings);
 
-        await sock.sendMessage(chatId, { text: `✅ Bot name updated to: *${newName}*! 🔥` }, { quoted: msg });
+        await sock.sendMessage(from, { text: `✅ Bot name updated to: *${newName}*! 🔥` }, { quoted: msg });
 
     } catch (error) {
         console.error('Error in setbotname command:', error);
-        await sock.sendMessage(chatId, { text: '❌ Failed to update bot name! 📛' });
+        await sock.sendMessage(from, { text: '❌ Failed to update bot name! 📛' });
     }
 }
 

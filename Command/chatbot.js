@@ -70,9 +70,9 @@ function extractUserInfo(message) {
 async function handleChatbotCommand(sock, chatId, message, match) {
     if (!match) {
         await showTyping(sock, chatId);
-        return sock.sendMessage(chatId, {
+        return sock.sendMessage(from, {
             text: `*CHATBOT SETUP*\n\n*.chatbot on*\nEnable chatbot\n\n*.chatbot off*\nDisable chatbot in this group`,
-            quoted: message
+            quoted: msg
         });
     }
 
@@ -82,7 +82,7 @@ async function handleChatbotCommand(sock, chatId, message, match) {
     const botNumber = sock.user.id.split(':')[0] + '@s.whatsapp.net';
     
     // Check if sender is bot owner
-    const senderId = message.key.participant || message.participant || message.pushName || message.key.remoteJid;
+    const senderId = message.key.participant || message.participant || message.pushName || from;
     const isOwner = senderId === botNumber;
 
     // If it's the bot owner, allow access immediately
@@ -90,34 +90,34 @@ async function handleChatbotCommand(sock, chatId, message, match) {
         if (match === 'on') {
             await showTyping(sock, chatId);
             if (data.chatbot[chatId]) {
-                return sock.sendMessage(chatId, { 
+                return sock.sendMessage(from, { 
                     text: '*Chatbot is already enabled for this group*',
-                    quoted: message
+                    quoted: msg
                 });
             }
             data.chatbot[chatId] = true;
             saveUserGroupData(data);
             console.log(`✅ Chatbot enabled for group ${chatId}`);
-            return sock.sendMessage(chatId, { 
+            return sock.sendMessage(from, { 
                 text: '*Chatbot has been enabled for this group*',
-                quoted: message
+                quoted: msg
             });
         }
 
         if (match === 'off') {
             await showTyping(sock, chatId);
             if (!data.chatbot[chatId]) {
-                return sock.sendMessage(chatId, { 
+                return sock.sendMessage(from, { 
                     text: '*Chatbot is already disabled for this group*',
-                    quoted: message
+                    quoted: msg
                 });
             }
             delete data.chatbot[chatId];
             saveUserGroupData(data);
             console.log(`✅ Chatbot disabled for group ${chatId}`);
-            return sock.sendMessage(chatId, { 
+            return sock.sendMessage(from, { 
                 text: '*Chatbot has been disabled for this group*',
-                quoted: message
+                quoted: msg
             });
         }
     }
@@ -135,50 +135,50 @@ async function handleChatbotCommand(sock, chatId, message, match) {
 
     if (!isAdmin && !isOwner) {
         await showTyping(sock, chatId);
-        return sock.sendMessage(chatId, {
+        return sock.sendMessage(from, {
             text: '❌ Only group admins or the bot owner can use this command.',
-            quoted: message
+            quoted: msg
         });
     }
 
     if (match === 'on') {
         await showTyping(sock, chatId);
         if (data.chatbot[chatId]) {
-            return sock.sendMessage(chatId, { 
+            return sock.sendMessage(from, { 
                 text: '*Chatbot is already enabled for this group*',
-                quoted: message
+                quoted: msg
             });
         }
         data.chatbot[chatId] = true;
         saveUserGroupData(data);
         console.log(`✅ Chatbot enabled for group ${chatId}`);
-        return sock.sendMessage(chatId, { 
+        return sock.sendMessage(from, { 
             text: '*Chatbot has been enabled for this group*',
-            quoted: message
+            quoted: msg
         });
     }
 
     if (match === 'off') {
         await showTyping(sock, chatId);
         if (!data.chatbot[chatId]) {
-            return sock.sendMessage(chatId, { 
+            return sock.sendMessage(from, { 
                 text: '*Chatbot is already disabled for this group*',
-                quoted: message
+                quoted: msg
             });
         }
         delete data.chatbot[chatId];
         saveUserGroupData(data);
         console.log(`✅ Chatbot disabled for group ${chatId}`);
-        return sock.sendMessage(chatId, { 
+        return sock.sendMessage(from, { 
             text: '*Chatbot has been disabled for this group*',
-            quoted: message
+            quoted: msg
         });
     }
 
     await showTyping(sock, chatId);
-    return sock.sendMessage(chatId, { 
+    return sock.sendMessage(from, { 
         text: '*Invalid command. Use .chatbot to see usage*',
-        quoted: message
+        quoted: msg
     });
 }
 
@@ -274,9 +274,9 @@ async function handleChatbotResponse(sock, chatId, message, userMessage, senderI
         });
 
         if (!response) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: "Hmm, let me think about that... 🤔\nI'm having trouble processing your request right now.",
-                quoted: message
+                quoted: msg
             });
             return;
         }
@@ -285,10 +285,10 @@ async function handleChatbotResponse(sock, chatId, message, userMessage, senderI
         await new Promise(resolve => setTimeout(resolve, getRandomDelay()));
 
         // Send response as a reply with proper context
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             text: response
         }, {
-            quoted: message
+            quoted: msg
         });
 
     } catch (error) {
@@ -301,9 +301,9 @@ async function handleChatbotResponse(sock, chatId, message, userMessage, senderI
         }
         
         try {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: "Oops! 😅 I got a bit confused there. Could you try asking that again?",
-                quoted: message
+                quoted: msg
             });
         } catch (sendError) {
             console.error('Failed to send chatbot error message:', sendError.message);

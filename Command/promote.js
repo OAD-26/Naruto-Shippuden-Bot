@@ -10,12 +10,12 @@ async function promoteCommand(sock, chatId, mentionedJids, message) {
         const errorMessage = "🍥 *Dattebayo!* I can't do that if I'm not an admin! Please make me an admin first! 🔥";
         
         if (fs.existsSync(imagePath)) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 image: fs.readFileSync(imagePath), 
                 caption: errorMessage 
-            }, { quoted: message });
+            }, { quoted: msg });
         } else {
-            await sock.sendMessage(chatId, { text: errorMessage });
+            await sock.sendMessage(from, { text: errorMessage });
         }
         return;
     }
@@ -33,7 +33,7 @@ async function promoteCommand(sock, chatId, mentionedJids, message) {
     
     // If no user found through either method
     if (userToPromote.length === 0) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: 'Please mention the user or reply to their message to promote!'
         });
         return;
@@ -56,13 +56,13 @@ async function promoteCommand(sock, chatId, mentionedJids, message) {
             `${usernames.map(name => `• ${name}`).join('\n')}\n\n` +
             `👑 *Promoted By:* @${promoterJid.split('@')[0]}\n\n` +
             `📅 *Date:* ${new Date().toLocaleString()}`;
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: promotionMessage,
             mentions: [...userToPromote, promoterJid]
         });
     } catch (error) {
         console.error('Error in promote command:', error);
-        await sock.sendMessage(chatId, { text: 'Failed to promote user(s)!'});
+        await sock.sendMessage(from, { text: 'Failed to promote user(s)!'});
     }
 }
 

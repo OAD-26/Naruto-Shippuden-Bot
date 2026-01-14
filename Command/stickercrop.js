@@ -6,7 +6,7 @@ const settings = require('../settings');
 const webp = require('node-webpmux');
 const crypto = require('crypto');
 
-async function stickercropCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     // The message that will be quoted in the reply.
     const messageToQuote = message;
     
@@ -30,7 +30,7 @@ async function stickercropCommand(sock, chatId, message) {
     const mediaMessage = targetMessage.message?.imageMessage || targetMessage.message?.videoMessage || targetMessage.message?.documentMessage || targetMessage.message?.stickerMessage;
 
     if (!mediaMessage) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: 'Please reply to an image/video/sticker with .crop, or send an image/video/sticker with .crop as the caption.',
             contextInfo: {
                 forwardingScore: 999,
@@ -41,7 +41,7 @@ async function stickercropCommand(sock, chatId, message) {
                     serverMessageId: -1
                 }
             }
-        },{ quoted: messageToQuote });
+        },{ quoted: msgToQuote });
         return;
     }
 
@@ -52,7 +52,7 @@ async function stickercropCommand(sock, chatId, message) {
         });
 
         if (!mediaBuffer) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: 'Failed to download media. Please try again.',
                 contextInfo: {
                     forwardingScore: 999,
@@ -166,9 +166,9 @@ async function stickercropCommand(sock, chatId, message) {
         const finalBuffer = await img.save(null);
 
         // Send the sticker
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             sticker: finalBuffer
-        },{ quoted: messageToQuote });
+        },{ quoted: msgToQuote });
 
         // Cleanup temp files
         try {
@@ -180,7 +180,7 @@ async function stickercropCommand(sock, chatId, message) {
 
     } catch (error) {
         console.error('Error in stickercrop command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: 'Failed to crop sticker! Try with an image.',
             contextInfo: {
                 forwardingScore: 999,

@@ -29,7 +29,7 @@ async function staffCommand(sock, chatId, msg) {
 `.trim();
 
         // Send the message with image and mentions
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             image: { url: pp },
             caption: text,
             mentions: [...groupAdmins.map(v => v.id), owner]
@@ -37,7 +37,7 @@ async function staffCommand(sock, chatId, msg) {
 
     } catch (error) {
         console.error('Error in staff command:', error);
-        await sock.sendMessage(chatId, { text: 'Failed to get admin list!' });
+        await sock.sendMessage(from, { text: 'Failed to get admin list!' });
     }
 }
 

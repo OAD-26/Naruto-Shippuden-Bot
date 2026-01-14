@@ -6,12 +6,12 @@ module.exports = {
     description: "Admin commands: kick, promote, demote, list admins 🛡️",
     prefix: "!",
     execute: async (sock, msg, args, groupAdmins) => {
-        const sender = msg.key.participant || msg.key.remoteJid;
+        const sender = msg.key.participant || from;
         const isOwner = ownerNumbers.includes(sender.split("@")[0]);
         const isAdmin = groupAdmins.includes(sender.split("@")[0]) || isOwner;
 
         if (!isAdmin) {
-            await sock.sendMessage(msg.key.remoteJid, {
+            await sock.sendMessage(from, {
                 text: "❌ You are not an admin! Only admins can use this command 🛑",
             });
             return;
@@ -23,39 +23,39 @@ module.exports = {
         switch (command) {
             case "kick":
                 if (!target) {
-                    await sock.sendMessage(msg.key.remoteJid, {
+                    await sock.sendMessage(from, {
                         text: "⚠️ Please mention the number to kick! Example: !admin kick 2349123456789",
                     });
                     return;
                 }
                 // implement kick logic here
-                await sock.sendMessage(msg.key.remoteJid, {
+                await sock.sendMessage(from, {
                     text: `👢 User ${target} has been kicked by ${sender.split("@")[0]}!`,
                 });
                 break;
 
             case "promote":
                 if (!target) {
-                    await sock.sendMessage(msg.key.remoteJid, {
+                    await sock.sendMessage(from, {
                         text: "⚠️ Please mention the number to promote! Example: !admin promote 2349123456789",
                     });
                     return;
                 }
                 // implement promote logic here
-                await sock.sendMessage(msg.key.remoteJid, {
+                await sock.sendMessage(from, {
                     text: `⬆️ User ${target} has been promoted to admin! 👑`,
                 });
                 break;
 
             case "demote":
                 if (!target) {
-                    await sock.sendMessage(msg.key.remoteJid, {
+                    await sock.sendMessage(from, {
                         text: "⚠️ Please mention the number to demote! Example: !admin demote 2349123456789",
                     });
                     return;
                 }
                 // implement demote logic here
-                await sock.sendMessage(msg.key.remoteJid, {
+                await sock.sendMessage(from, {
                     text: `⬇️ User ${target} has been demoted from admin! 😔`,
                 });
                 break;
@@ -68,11 +68,11 @@ module.exports = {
                 adminList.forEach((num, idx) => {
                     msgText += `${idx + 1}. ${num}\n`;
                 });
-                await sock.sendMessage(msg.key.remoteJid, { text: msgText });
+                await sock.sendMessage(from, { text: msgText });
                 break;
 
             default:
-                await sock.sendMessage(msg.key.remoteJid, {
+                await sock.sendMessage(from, {
                     text:
                         `❓ Unknown command! Available commands for admins:\n\n` +
                         `!admin kick <number> 👢\n` +

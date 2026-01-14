@@ -30,7 +30,7 @@ async function simpCommand(sock, chatId, quotedMsg, mentionedJid, sender) {
         const imageBuffer = await response.buffer();
 
         // Send the image with caption
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             image: imageBuffer,
             caption: '*your religion is simping*',
             contextInfo: {
@@ -46,7 +46,7 @@ async function simpCommand(sock, chatId, quotedMsg, mentionedJid, sender) {
 
     } catch (error) {
         console.error('Error in simp command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: '❌ Sorry, I couldn\'t generate the simp card. Please try again later!',
             contextInfo: {
                 forwardingScore: 1,

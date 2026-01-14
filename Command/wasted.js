@@ -1,7 +1,7 @@
 const axios = require('axios');
 const { channelInfo } = require('../lib/messageConfig');
 
-async function wastedCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     let userToWaste;
     
     // Check for mentioned users
@@ -14,10 +14,10 @@ async function wastedCommand(sock, chatId, message) {
     }
     
     if (!userToWaste) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: 'Please mention someone or reply to their message to waste them!', 
             ...channelInfo 
-        }, { quoted: message });
+        }, { quoted: msg });
         return;
     }
 
@@ -37,7 +37,7 @@ async function wastedCommand(sock, chatId, message) {
         );
 
         // Send the wasted image
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             image: Buffer.from(wastedResponse.data),
             caption: `⚰️ *Wasted* : ${userToWaste.split('@')[0]} 💀\n\nRest in pieces!`,
             mentions: [userToWaste],
@@ -46,10 +46,10 @@ async function wastedCommand(sock, chatId, message) {
 
     } catch (error) {
         console.error('Error in wasted command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: 'Failed to create wasted image! Try again later.',
             ...channelInfo 
-        }, { quoted: message });
+        }, { quoted: msg });
     }
 }
 

@@ -3,12 +3,12 @@ const fs = require('fs');
 const path = require('path');
 const { writeExifImg, writeExifVid } = require('../lib/exif');
 
-async function attpCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     const userMessage = message.message.conversation || message.message.extendedTextMessage?.text || '';
     const text = userMessage.split(' ').slice(1).join(' ');
 
     if (!text) {
-        await sock.sendMessage(chatId, { text: 'Please provide text after the .attp command.' }, { quoted: message });
+        await sock.sendMessage(from, { text: 'Please provide text after the .attp command.' }, { quoted: msg });
         return;
     }
 
@@ -17,10 +17,10 @@ async function attpCommand(sock, chatId, message) {
         const webpPath = await writeExifVid(mp4Buffer, { packname: 'Naruto-Shippuden-Bot' });
         const webpBuffer = fs.readFileSync(webpPath);
         try { fs.unlinkSync(webpPath) } catch (_) {}
-        await sock.sendMessage(chatId, { sticker: webpBuffer }, { quoted: message });
+        await sock.sendMessage(from, { sticker: webpBuffer }, { quoted: msg });
     } catch (error) {
         console.error('Error generating local sticker:', error);
-        await sock.sendMessage(chatId, { text: 'Failed to generate the sticker locally.' }, { quoted: message });
+        await sock.sendMessage(from, { text: 'Failed to generate the sticker locally.' }, { quoted: msg });
     }
 }
 

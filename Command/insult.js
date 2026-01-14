@@ -30,7 +30,7 @@ const insults = [
     "You bring people together... to talk about how annoying you are."
 ];
 
-async function insultCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         if (!message || !chatId) {
             console.log('Invalid message or chatId:', { message, chatId });
@@ -49,7 +49,7 @@ async function insultCommand(sock, chatId, message) {
         }
         
         if (!userToInsult) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: 'Please mention someone or reply to their message to insult them!'
             });
             return;
@@ -60,7 +60,7 @@ async function insultCommand(sock, chatId, message) {
         // Add delay to avoid rate limiting
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: `Hey @${userToInsult.split('@')[0]}, ${insult}`,
             mentions: [userToInsult]
         });
@@ -69,7 +69,7 @@ async function insultCommand(sock, chatId, message) {
         if (error.data === 429) {
             await new Promise(resolve => setTimeout(resolve, 2000));
             try {
-                await sock.sendMessage(chatId, { 
+                await sock.sendMessage(from, { 
                     text: 'Please try again in a few seconds.'
                 });
             } catch (retryError) {
@@ -77,7 +77,7 @@ async function insultCommand(sock, chatId, message) {
             }
         } else {
             try {
-                await sock.sendMessage(chatId, { 
+                await sock.sendMessage(from, { 
                     text: 'An error occurred while sending the insult.'
                 });
             } catch (sendError) {

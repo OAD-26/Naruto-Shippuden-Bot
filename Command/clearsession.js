@@ -4,7 +4,7 @@ module.exports = {
     name: 'clearsession',
     description: 'Clear bot session (owner only)',
     execute: async (sock, msg) => {
-        const jid = msg.key.remoteJid;
+        const jid = from;
 
         if (msg.key.participant !== ownerNumber) {
             return sock.sendMessage(jid, { text: '❌ Only the owner can use this command!' });

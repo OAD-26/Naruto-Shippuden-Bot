@@ -18,7 +18,7 @@ async function tagCommand(sock, chatId, senderId, messageText, replyMessage, mes
     const { isSenderAdmin, isBotAdmin } = await isAdmin(sock, chatId, senderId);
 
     if (!isBotAdmin) {
-        await sock.sendMessage(chatId, { text: 'Please make the bot an admin first.' }, { quoted: message });
+        await sock.sendMessage(from, { text: 'Please make the bot an admin first.' }, { quoted: msg });
         return;
     }
 
@@ -26,7 +26,7 @@ async function tagCommand(sock, chatId, senderId, messageText, replyMessage, mes
         const stickerPath = path.join(__dirname, '../Assets/Naruto-Shippuden-Bot_Avatar.png');  // Path to your sticker
         if (fs.existsSync(stickerPath)) {
             const stickerBuffer = fs.readFileSync(stickerPath);
-            await sock.sendMessage(chatId, { sticker: stickerBuffer }, { quoted: message });
+            await sock.sendMessage(from, { sticker: stickerBuffer }, { quoted: msg });
         }
         return;
     }
@@ -75,10 +75,10 @@ async function tagCommand(sock, chatId, senderId, messageText, replyMessage, mes
         }
 
         if (Object.keys(messageContent).length > 0) {
-            await sock.sendMessage(chatId, messageContent);
+            await sock.sendMessage(from, messageContent);
         }
     } else {
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             text: messageText || "Tagged message",
             mentions: mentionedJidList
         });

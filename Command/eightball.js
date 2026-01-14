@@ -11,12 +11,12 @@ const eightBallResponses = [
 
 async function eightBallCommand(sock, chatId, question) {
     if (!question) {
-        await sock.sendMessage(chatId, { text: 'Please ask a question!' });
+        await sock.sendMessage(from, { text: 'Please ask a question!' });
         return;
     }
 
     const randomResponse = eightBallResponses[Math.floor(Math.random() * eightBallResponses.length)];
-    await sock.sendMessage(chatId, { text: `🎱 ${randomResponse}` });
+    await sock.sendMessage(from, { text: `🎱 ${randomResponse}` });
 }
 
 module.exports = { eightBallCommand };

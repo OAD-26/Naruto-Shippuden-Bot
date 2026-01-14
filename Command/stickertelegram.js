@@ -18,7 +18,7 @@ async function stickerTelegramCommand(sock, chatId, msg) {
         const args = text.split(' ').slice(1);
         
         if (!args[0]) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: '⚠️ Please enter the Telegram sticker URL!\n\nExample: .tg https://t.me/addstickers/Porcientoreal' 
             });
             return;
@@ -26,7 +26,7 @@ async function stickerTelegramCommand(sock, chatId, msg) {
 
         // Validate URL format
         if (!args[0].match(/(https:\/\/t.me\/addstickers\/)/gi)) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: '❌ Invalid URL! Make sure it\'s a Telegram sticker URL.' 
             });
             return;
@@ -62,7 +62,7 @@ async function stickerTelegramCommand(sock, chatId, msg) {
             }
 
             // Send initial message with sticker count
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: `📦 Found ${stickerSet.result.stickers.length} stickers\n⏳ Starting download...` 
             });
 
@@ -145,7 +145,7 @@ async function stickerTelegramCommand(sock, chatId, msg) {
                     const finalBuffer = await img.save(null);
 
                     // Send sticker only once
-                    await sock.sendMessage(chatId, { 
+                    await sock.sendMessage(from, { 
                         sticker: finalBuffer 
                     });
 
@@ -167,7 +167,7 @@ async function stickerTelegramCommand(sock, chatId, msg) {
             }
 
             // Only send completion message at the end
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: `✅ Successfully downloaded ${successCount}/${stickerSet.result.stickers.length} stickers!` 
             });
 
@@ -177,7 +177,7 @@ async function stickerTelegramCommand(sock, chatId, msg) {
 
     } catch (error) {
         console.error('Error in stickertelegram command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: '❌ Failed to process Telegram stickers!\nMake sure:\n1. The URL is correct\n2. The sticker pack exists\n3. The sticker pack is public' 
         });
     }

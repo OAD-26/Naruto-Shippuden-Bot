@@ -28,14 +28,14 @@ const messageTemplates = {
 async function textmakerCommand(sock, chatId, message, q, type) {
     try {
         if (!q) {
-            return await sock.sendMessage(chatId, messageTemplates.error("Please provide text to generate\nExample: .metallic Nick"));
+            return await sock.sendMessage(from, messageTemplates.error("Please provide text to generate\nExample: .metallic Nick"));
         }
 
         // Extract text
         const text = q.split(' ').slice(1).join(' ');
 
         if (!text) {
-            return await sock.sendMessage(chatId, messageTemplates.error("Please provide text to generate\nExample: .metallic Nick"));
+            return await sock.sendMessage(from, messageTemplates.error("Please provide text to generate\nExample: .metallic Nick"));
         }
 
         try {
@@ -96,21 +96,21 @@ async function textmakerCommand(sock, chatId, message, q, type) {
                     result = await mumaker.ephoto("https://en.ephoto360.com/flame-lettering-effect-372.html", text);
                     break;
                 default:
-                    return await sock.sendMessage(chatId, messageTemplates.error("Invalid text generator type"));
+                    return await sock.sendMessage(from, messageTemplates.error("Invalid text generator type"));
             }
 
             if (!result || !result.image) {
                 throw new Error('No image URL received from the API');
             }
 
-            await sock.sendMessage(chatId, messageTemplates.success(text, result.image));
+            await sock.sendMessage(from, messageTemplates.success(text, result.image));
         } catch (error) {
             console.error('Error in text generator:', error);
-            await sock.sendMessage(chatId, messageTemplates.error(`Error: ${error.message}`));
+            await sock.sendMessage(from, messageTemplates.error(`Error: ${error.message}`));
         }
     } catch (error) {
         console.error('Error in textmaker command:', error);
-        await sock.sendMessage(chatId, messageTemplates.error("An error occurred. Please try again later."));
+        await sock.sendMessage(from, messageTemplates.error("An error occurred. Please try again later."));
     }
 }
 

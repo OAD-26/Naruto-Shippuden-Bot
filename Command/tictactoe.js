@@ -10,7 +10,7 @@ async function tictactoeCommand(sock, chatId, senderId, text) {
             room.id.startsWith('tictactoe') && 
             [room.game.playerX, room.game.playerO].includes(senderId)
         )) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: '❌ You are still in a game. Type *surrender* to quit.' 
             });
             return;
@@ -59,7 +59,7 @@ ${arr.slice(6).join('')}
 `;
 
             // Send message only once to the group
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: str,
                 mentions: [room.game.currentTurn, room.game.playerX, room.game.playerO]
             });
@@ -76,7 +76,7 @@ ${arr.slice(6).join('')}
 
             if (text) room.name = text;
 
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: `⏳ *Waiting for opponent*\nType *.ttt ${text || ''}* to join!`
             });
 
@@ -85,7 +85,7 @@ ${arr.slice(6).join('')}
 
     } catch (error) {
         console.error('Error in tictactoe command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: '❌ Error starting game. Please try again.' 
         });
     }
@@ -108,7 +108,7 @@ async function handleTicTacToeMove(sock, chatId, senderId, text) {
 
         // Allow surrender at any time, not just during player's turn
         if (senderId !== room.game.currentTurn && !isSurrender) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: '❌ Not your turn!' 
             });
             return;
@@ -120,7 +120,7 @@ async function handleTicTacToeMove(sock, chatId, senderId, text) {
         );
 
         if (!ok) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: '❌ Invalid move! That position is already taken.' 
             });
             return;
@@ -148,7 +148,7 @@ async function handleTicTacToeMove(sock, chatId, senderId, text) {
             winner = senderId === room.game.playerX ? room.game.playerO : room.game.playerX;
             
             // Send a surrender message
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: `🏳️ @${senderId.split('@')[0]} has surrendered! @${winner.split('@')[0]} wins the game!`,
                 mentions: [senderId, winner]
             });

@@ -33,7 +33,7 @@ async function stupidCommand(sock, chatId, quotedMsg, mentionedJid, sender, args
         const imageBuffer = await response.buffer();
 
         // Send the image with caption
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             image: imageBuffer,
             caption: `*@${who.split('@')[0]}*`,
             mentions: [who]
@@ -41,7 +41,7 @@ async function stupidCommand(sock, chatId, quotedMsg, mentionedJid, sender, args
 
     } catch (error) {
         console.error('Error in stupid command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: '❌ Sorry, I couldn\'t generate the stupid card. Please try again later!'
         });
     }

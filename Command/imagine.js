@@ -1,7 +1,7 @@
 const axios = require('axios');
 const { fetchBuffer } = require('../lib/myfunc');
 
-async function imagineCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         // Get the prompt from the message
         const prompt = message.message?.conversation?.trim() || 
@@ -11,19 +11,19 @@ async function imagineCommand(sock, chatId, message) {
         const imagePrompt = prompt.slice(8).trim();
         
         if (!imagePrompt) {
-            await sock.sendMessage(chatId, {
+            await sock.sendMessage(from, {
                 text: 'Please provide a prompt for the image generation.\nExample: .imagine a beautiful sunset over mountains'
             }, {
-                quoted: message
+                quoted: msg
             });
             return;
         }
 
         // Send processing message
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             text: '🎨 Generating your image... Please wait.'
         }, {
-            quoted: message
+            quoted: msg
         });
 
         // Enhance the prompt with quality keywords
@@ -38,19 +38,19 @@ async function imagineCommand(sock, chatId, message) {
         const imageBuffer = Buffer.from(response.data);
 
         // Send the generated image
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             image: imageBuffer,
             caption: `🎨 Generated image for prompt: "${imagePrompt}"`
         }, {
-            quoted: message
+            quoted: msg
         });
 
     } catch (error) {
         console.error('Error in imagine command:', error);
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             text: '❌ Failed to generate image. Please try again later.'
         }, {
-            quoted: message
+            quoted: msg
         });
     }
 }

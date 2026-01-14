@@ -10,9 +10,9 @@ async function blurCommand(sock, chatId, message, quotedMessage) {
         if (quotedMessage) {
             // If replying to a message
             if (!quotedMessage.imageMessage) {
-                await sock.sendMessage(chatId, { 
+                await sock.sendMessage(from, { 
                     text: '❌ Please reply to an image message' 
-                }, { quoted: message });
+                }, { quoted: msg });
                 return;
             }
             
@@ -37,9 +37,9 @@ async function blurCommand(sock, chatId, message, quotedMessage) {
                 { }
             );
         } else {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: '❌ Please reply to an image or send an image with caption .blur' 
-            }, { quoted: message });
+            }, { quoted: msg });
             return;
         }
 
@@ -58,7 +58,7 @@ async function blurCommand(sock, chatId, message, quotedMessage) {
             .toBuffer();
 
         // Send the blurred image
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             image: blurredImage,
             caption: '*[ ✔ ] Image Blurred Successfully*',
             contextInfo: {
@@ -70,13 +70,13 @@ async function blurCommand(sock, chatId, message, quotedMessage) {
                     serverMessageId: -1
                 }
             }
-        }, { quoted: message });
+        }, { quoted: msg });
 
     } catch (error) {
         console.error('Error in blur command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: '❌ Failed to blur image. Please try again later.' 
-        }, { quoted: message });
+        }, { quoted: msg });
     }
 }
 

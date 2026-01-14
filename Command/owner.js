@@ -9,7 +9,7 @@ TEL;waid=${settings.ownerNumber}:${settings.ownerNumber}
 END:VCARD
 `;
 
-    await sock.sendMessage(chatId, {
+    await sock.sendMessage(from, {
         contacts: { displayName: settings.botOwner, contacts: [{ vcard }] },
     });
 }

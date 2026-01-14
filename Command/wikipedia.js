@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 module.exports = async (sock, msg, config) => {
-    const jid = msg.key.remoteJid;
+    const jid = from;
     const text = msg.message?.conversation || msg.message?.extendedTextMessage?.text || "";
     const query = text.split(' ').slice(1).join(' ').trim();
 

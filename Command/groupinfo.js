@@ -38,7 +38,7 @@ ${listAdmin}
 `.trim();
 
         // Send the message with image and mentions
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             image: { url: pp },
             caption: text,
             mentions: [...groupAdmins.map(v => v.id), owner]
@@ -46,7 +46,7 @@ ${listAdmin}
 
     } catch (error) {
         console.error('Error in groupinfo command:', error);
-        await sock.sendMessage(chatId, { text: 'Failed to get group info!' });
+        await sock.sendMessage(from, { text: 'Failed to get group info!' });
     }
 }
 

@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-async function flirtCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         const shizokeys = 'shizo';
         const res = await fetch(`https://shizoapi.onrender.com/api/texts/flirt?apikey=${shizokeys}`);
@@ -13,10 +13,10 @@ async function flirtCommand(sock, chatId, message) {
         const flirtMessage = json.result;
 
         // Send the flirt message
-        await sock.sendMessage(chatId, { text: flirtMessage }, { quoted: message });
+        await sock.sendMessage(from, { text: flirtMessage }, { quoted: msg });
     } catch (error) {
         console.error('Error in flirt command:', error);
-        await sock.sendMessage(chatId, { text: '❌ Failed to get flirt message. Please try again later!' }, { quoted: message });
+        await sock.sendMessage(from, { text: '❌ Failed to get flirt message. Please try again later!' }, { quoted: msg });
     }
 }
 

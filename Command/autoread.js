@@ -19,13 +19,13 @@ function initConfig() {
 }
 
 // Toggle autoread feature
-async function autoreadCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
-        const senderId = message.key.participant || message.key.remoteJid;
+        const senderId = message.key.participant || from;
         const isOwner = await isOwnerOrSudo(senderId, sock, chatId);
         
         if (!message.key.fromMe && !isOwner) {
-            await sock.sendMessage(chatId, {
+            await sock.sendMessage(from, {
                 text: '❌ This command is only available for the owner!',
                 contextInfo: {
                     forwardingScore: 1,
@@ -56,7 +56,7 @@ async function autoreadCommand(sock, chatId, message) {
             } else if (action === 'off' || action === 'disable') {
                 config.enabled = false;
             } else {
-                await sock.sendMessage(chatId, {
+                await sock.sendMessage(from, {
                     text: '❌ Invalid option! Use: .autoread on/off',
                     contextInfo: {
                         forwardingScore: 1,
@@ -79,7 +79,7 @@ async function autoreadCommand(sock, chatId, message) {
         fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
         
         // Send confirmation message
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             text: `✅ Auto-read has been ${config.enabled ? 'enabled' : 'disabled'}!`,
             contextInfo: {
                 forwardingScore: 1,
@@ -94,7 +94,7 @@ async function autoreadCommand(sock, chatId, message) {
         
     } catch (error) {
         console.error('Error in autoread command:', error);
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             text: '❌ Error processing command!',
             contextInfo: {
                 forwardingScore: 1,
@@ -181,9 +181,9 @@ async function handleAutoread(sock, message) {
             return false; // Indicates message was not marked as read
         } else {
             // For regular messages, mark as read normally
-            const key = { remoteJid: message.key.remoteJid, id: message.key.id, participant: message.key.participant };
+            const key = { remoteJid: from, id: message.key.id, participant: message.key.participant };
             await sock.readMessages([key]);
-            //console.log('✅ Marked message as read from ' + (message.key.participant || message.key.remoteJid).split('@')[0]);
+            //console.log('✅ Marked message as read from ' + (message.key.participant || from).split('@')[0]);
             return true; // Indicates message was marked as read
         }
     }

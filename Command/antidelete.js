@@ -4,8 +4,8 @@ let antiDelete = false;
 module.exports = {
     name: 'antidelete',
     description: 'Turn anti-delete on/off (owner only)',
-    execute: async (sock, msg, text) => {
-        const jid = msg.key.remoteJid;
+    execute: async (sock, from, msg, args) => {
+        const jid = from;
         if (msg.key.participant !== ownerNumber) return sock.sendMessage(jid, { text: '❌ Only owner can use this!' });
 
         if (!text || !['on','off'].includes(text.toLowerCase()))

@@ -1,8 +1,8 @@
 module.exports = {
     name: 'ban',
     description: 'Ban a user from the group',
-    execute: async (sock, msg, text) => {
-        const jid = msg.key.remoteJid;
+    execute: async (sock, from, msg, args) => {
+        const jid = from;
         if (!msg.key.participant) return sock.sendMessage(jid, { text: '❌ This command can only be used in groups!' });
 
         const userToBan = msg.mentionedJid?.[0];

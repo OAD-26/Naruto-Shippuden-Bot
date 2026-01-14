@@ -54,11 +54,11 @@ async function getOkatsuDownloadByUrl(youtubeUrl) {
 	throw new Error('Okatsu ytmp3 returned no download');
 }
 
-async function songCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         const text = message.message?.conversation || message.message?.extendedTextMessage?.text || '';
         if (!text) {
-            await sock.sendMessage(chatId, { text: 'Usage: .song <song name or YouTube link>' }, { quoted: message });
+            await sock.sendMessage(from, { text: 'Usage: .song <song name or YouTube link>' }, { quoted: msg });
             return;
         }
 
@@ -68,17 +68,17 @@ async function songCommand(sock, chatId, message) {
         } else {
 			const search = await yts(text);
 			if (!search || !search.videos.length) {
-                await sock.sendMessage(chatId, { text: 'No results found.' }, { quoted: message });
+                await sock.sendMessage(from, { text: 'No results found.' }, { quoted: msg });
                 return;
             }
 			video = search.videos[0];
         }
 
         // Inform user
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             image: { url: video.thumbnail },
             caption: `🎵 Downloading: *${video.title}*\n⏱ Duration: ${video.timestamp}`
-        }, { quoted: message });
+        }, { quoted: msg });
 
 		// Try Izumi primary by URL, then by query, then Okatsu fallback
 		let audioData;
@@ -96,16 +96,16 @@ async function songCommand(sock, chatId, message) {
 			}
 		}
 
-		await sock.sendMessage(chatId, {
+		await sock.sendMessage(from, {
 			audio: { url: audioData.download || audioData.dl || audioData.url },
 			mimetype: 'audio/mpeg',
 			fileName: `${(audioData.title || video.title || 'song')}.mp3`,
 			ptt: false
-		}, { quoted: message });
+		}, { quoted: msg });
 
     } catch (err) {
         console.error('Song command error:', err);
-        await sock.sendMessage(chatId, { text: '❌ Failed to download song.' }, { quoted: message });
+        await sock.sendMessage(from, { text: '❌ Failed to download song.' }, { quoted: msg });
     }
 }
 

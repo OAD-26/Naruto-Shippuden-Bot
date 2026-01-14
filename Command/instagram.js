@@ -31,7 +31,7 @@ function isValidMediaUrl(url) {
            url.includes('http');
 }
 
-async function instagramCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         // Check if message has already been processed
         if (processedMessages.has(message.key.id)) {
@@ -49,7 +49,7 @@ async function instagramCommand(sock, chatId, message) {
         const text = message.message?.conversation || message.message?.extendedTextMessage?.text;
         
         if (!text) {
-            return await sock.sendMessage(chatId, { 
+            return await sock.sendMessage(from, { 
                 text: "Please provide an Instagram link for the video."
             });
         }
@@ -66,19 +66,19 @@ async function instagramCommand(sock, chatId, message) {
         const isValidUrl = instagramPatterns.some(pattern => pattern.test(text));
         
         if (!isValidUrl) {
-            return await sock.sendMessage(chatId, { 
+            return await sock.sendMessage(from, { 
                 text: "That is not a valid Instagram link. Please provide a valid Instagram post, reel, or video link."
             });
         }
 
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             react: { text: '🔄', key: message.key }
         });
 
         const downloadData = await igdl(text);
         
         if (!downloadData || !downloadData.data || downloadData.data.length === 0) {
-            return await sock.sendMessage(chatId, { 
+            return await sock.sendMessage(from, { 
                 text: "❌ No media found at the provided link. The post might be private or the link is invalid."
             });
         }
@@ -92,7 +92,7 @@ async function instagramCommand(sock, chatId, message) {
         const mediaToDownload = uniqueMedia.slice(0, 20);
         
         if (mediaToDownload.length === 0) {
-            return await sock.sendMessage(chatId, { 
+            return await sock.sendMessage(from, { 
                 text: "❌ No valid media found to download. This might be a private post or the scraper failed."
             });
         }
@@ -110,16 +110,16 @@ async function instagramCommand(sock, chatId, message) {
                               text.includes('/tv/');
 
                 if (isVideo) {
-                    await sock.sendMessage(chatId, {
+                    await sock.sendMessage(from, {
                         video: { url: mediaUrl },
                         mimetype: "video/mp4",
                         caption: "🍥 *Wind Style: Rasenshuriken!* 🌀\n\n> *_Downloaded by Naruto-Shippuden-Bot_*"
-                    }, { quoted: message });
+                    }, { quoted: msg });
                 } else {
-                    await sock.sendMessage(chatId, {
+                    await sock.sendMessage(from, {
                         image: { url: mediaUrl },
                         caption: "🍥 *Kage Bunshin no Jutsu!* 🌀\n\n> *_Downloaded by Naruto-Shippuden-Bot_*"
-                    }, { quoted: message });
+                    }, { quoted: msg });
                 }
                 
                 // Add small delay between downloads to prevent rate limiting
@@ -135,7 +135,7 @@ async function instagramCommand(sock, chatId, message) {
 
     } catch (error) {
         console.error('Error in Instagram command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: "❌ An error occurred while processing the Instagram request. Please try again."
         });
     }

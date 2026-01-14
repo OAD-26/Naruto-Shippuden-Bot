@@ -1,7 +1,7 @@
 const axios = require('axios');
 const { channelInfo } = require('../lib/messageConfig');
 
-async function characterCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     let userToAnalyze;
     
     // Check for mentioned users
@@ -14,7 +14,7 @@ async function characterCommand(sock, chatId, message) {
     }
     
     if (!userToAnalyze) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: 'Please mention someone or reply to their message to analyze their character!', 
             ...channelInfo 
         });
@@ -63,7 +63,7 @@ async function characterCommand(sock, chatId, message) {
             `Note: This is a fun analysis and should not be taken seriously!`;
 
         // Send the analysis with the user's profile picture
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             image: { url: profilePic },
             caption: analysis,
             mentions: [userToAnalyze],
@@ -72,7 +72,7 @@ async function characterCommand(sock, chatId, message) {
 
     } catch (error) {
         console.error('Error in character command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: 'Failed to analyze character! Try again later.',
             ...channelInfo 
         });

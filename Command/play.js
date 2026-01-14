@@ -1,13 +1,13 @@
 const yts = require('yt-search');
 const axios = require('axios');
 
-async function playCommand(sock, chatId, message) {
+async function(sock, from, msg, args) {
     try {
         const text = message.message?.conversation || message.message?.extendedTextMessage?.text;
         const searchQuery = text.split(' ').slice(1).join(' ').trim();
         
         if (!searchQuery) {
-            return await sock.sendMessage(chatId, { 
+            return await sock.sendMessage(from, { 
                 text: "🍥 *Kage Bunshin no Jutsu!* 🌀\n\nPlease provide a song name to search, shinobi!"
             });
         }
@@ -15,13 +15,13 @@ async function playCommand(sock, chatId, message) {
         // Search for the song
         const { videos } = await yts(searchQuery);
         if (!videos || videos.length === 0) {
-            return await sock.sendMessage(chatId, { 
+            return await sock.sendMessage(from, { 
                 text: "🚫 *Shadow Clone Jutsu Failed!* 🌀\n\nNo songs found in the Hidden Leaf scroll!"
             });
         }
 
         // Send loading message
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             text: "🍥 *Wind Style: Rasenshuriken!* 🌀\n\n_Gathering chakra... your download is in progress!_"
         });
 
@@ -54,21 +54,21 @@ async function playCommand(sock, chatId, message) {
         }
 
         if (!audioUrl) {
-            return await sock.sendMessage(chatId, { 
+            return await sock.sendMessage(from, { 
                 text: "🚫 *Chakra Depleted!* 🌀\n\nFailed to fetch the song from any scroll. Try again later!"
             });
         }
 
         // Send the audio
-        await sock.sendMessage(chatId, {
+        await sock.sendMessage(from, {
             audio: { url: audioUrl },
             mimetype: "audio/mpeg",
             fileName: `${title}.mp3`
-        }, { quoted: message });
+        }, { quoted: msg });
 
     } catch (error) {
         console.error('Error in play command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(from, { 
             text: "💥 *Explosion Jutsu!* 🌀\n\nSomething went wrong during the mission. Try again!"
         });
     }

@@ -4,8 +4,8 @@ let autoReact = false; // Global flag
 module.exports = {
     name: 'autoreact',
     description: 'Turn auto react on/off (owner only)',
-    execute: async (sock, msg, text) => {
-        const jid = msg.key.remoteJid;
+    execute: async (sock, from, msg, args) => {
+        const jid = from;
 
         if (msg.key.participant !== ownerNumber) {
             return sock.sendMessage(jid, { text: '❌ Only the owner can use this command!' });

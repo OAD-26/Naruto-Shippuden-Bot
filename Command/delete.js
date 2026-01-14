@@ -6,12 +6,12 @@ async function deleteCommand(sock, chatId, message, senderId) {
         const { isSenderAdmin, isBotAdmin } = await isAdmin(sock, chatId, senderId);
 
         if (!isBotAdmin) {
-            await sock.sendMessage(chatId, { text: 'I need to be an admin to delete messages.' }, { quoted: message });
+            await sock.sendMessage(from, { text: 'I need to be an admin to delete messages.' }, { quoted: msg });
             return;
         }
 
         if (!isSenderAdmin) {
-            await sock.sendMessage(chatId, { text: 'Only admins can use the .delete command.' }, { quoted: message });
+            await sock.sendMessage(from, { text: 'Only admins can use the .delete command.' }, { quoted: msg });
             return;
         }
 
@@ -39,9 +39,9 @@ async function deleteCommand(sock, chatId, message, senderId) {
         }
         // If no number provided and not replying/mentioning, show usage message
         else if (countArg === null && !repliedParticipant && !mentioned) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(from, { 
                 text: '❌ Please specify the number of messages to delete.\n\nUsage:\n• `.del 5` - Delete last 5 messages from group\n• `.del 3 @user` - Delete last 3 messages from @user\n• `.del 2` (reply to message) - Delete last 2 messages from replied user' 
-            }, { quoted: message });
+            }, { quoted: msg });
             return;
         }
         // If no number provided but mentioning a user, default to 1
@@ -96,7 +96,7 @@ async function deleteCommand(sock, chatId, message, senderId) {
                 } else {
                     // If not found in store, still attempt delete directly
                     try {
-                        await sock.sendMessage(chatId, {
+                        await sock.sendMessage(from, {
                             delete: {
                                 remoteJid: chatId,
                                 fromMe: false,
@@ -126,7 +126,7 @@ async function deleteCommand(sock, chatId, message, senderId) {
             const errorMsg = deleteGroupMessages 
                 ? 'No recent messages found in the group to delete.' 
                 : 'No recent messages found for the target user.';
-            await sock.sendMessage(chatId, { text: errorMsg }, { quoted: message });
+            await sock.sendMessage(from, { text: errorMsg }, { quoted: msg });
             return;
         }
 
@@ -136,7 +136,7 @@ async function deleteCommand(sock, chatId, message, senderId) {
                 const msgParticipant = deleteGroupMessages 
                     ? (m.key.participant || m.key.remoteJid) 
                     : (m.key.participant || targetUser);
-                await sock.sendMessage(chatId, {
+                await sock.sendMessage(from, {
                     delete: {
                         remoteJid: chatId,
                         fromMe: false,
@@ -152,7 +152,7 @@ async function deleteCommand(sock, chatId, message, senderId) {
 
     
     } catch (err) {
-        await sock.sendMessage(chatId, { text: 'Failed to delete messages.' }, { quoted: message });
+        await sock.sendMessage(from, { text: 'Failed to delete messages.' }, { quoted: msg });
     }
 }
 

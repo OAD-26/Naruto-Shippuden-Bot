@@ -4,12 +4,12 @@ const { downloadMediaMessage } = require('@whiskeysockets/baileys');
 const webp = require('node-webpmux');
 const crypto = require('crypto');
 
-async function takeCommand(sock, chatId, message, args) {
+async function(sock, from, msg, args) {
     try {
         // Check if message is a reply to a sticker
         const quotedMessage = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
         if (!quotedMessage?.stickerMessage) {
-            await sock.sendMessage(chatId, { text: '❌ Reply to a sticker with .take <packname>' });
+            await sock.sendMessage(from, { text: '❌ Reply to a sticker with .take <packname>' });
             return;
         }
 
@@ -33,7 +33,7 @@ async function takeCommand(sock, chatId, message, args) {
             );
 
             if (!stickerBuffer) {
-                await sock.sendMessage(chatId, { text: '❌ Failed to download sticker' });
+                await sock.sendMessage(from, { text: '❌ Failed to download sticker' });
                 return;
             }
 
@@ -61,20 +61,20 @@ async function takeCommand(sock, chatId, message, args) {
             const finalBuffer = await img.save(null);
 
             // Send the sticker
-            await sock.sendMessage(chatId, {
+            await sock.sendMessage(from, {
                 sticker: finalBuffer
             }, {
-                quoted: message
+                quoted: msg
             });
 
         } catch (error) {
             console.error('Sticker processing error:', error);
-            await sock.sendMessage(chatId, { text: '❌ Error processing sticker' });
+            await sock.sendMessage(from, { text: '❌ Error processing sticker' });
         }
 
     } catch (error) {
         console.error('Error in take command:', error);
-        await sock.sendMessage(chatId, { text: '❌ Error processing command' });
+        await sock.sendMessage(from, { text: '❌ Error processing command' });
     }
 }
 
