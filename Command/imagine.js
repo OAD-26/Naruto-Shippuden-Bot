@@ -29,34 +29,26 @@ async function imagineCommand(sock, from, msg, args) {
                 `https://shizoapi.onrender.com/api/ai/motion-video?apikey=shizo&query=${encodeURIComponent(videoPrompt)}`
             ];
 
-            let videoBuffer = null;
-            let finalVideoPrompt = videoPrompt;
+            let videoUrl = null;
 
             for (const apiUrl of apiEndpoints) {
                 try {
                     const response = await axios.get(apiUrl);
                     if (response.data && (response.data.result || response.data.url)) {
-                        const videoUrl = response.data.result || response.data.url;
-                        videoBuffer = await fetchBuffer(videoUrl, {
-                            headers: {
-                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                                'Accept': 'video/mp4,video/*;q=0.9,*/*;q=0.8',
-                                'Referer': 'https://shizoapi.onrender.com/'
-                            }
-                        });
-                        if (Buffer.isBuffer(videoBuffer) && videoBuffer.length > 1024) break;
+                        videoUrl = response.data.result || response.data.url;
+                        if (videoUrl) break;
                     }
                 } catch (e) {
                     continue;
                 }
             }
 
-            if (!videoBuffer || videoBuffer.length < 1024) {
+            if (!videoUrl) {
                 throw new Error('All Video Summoning scrolls failed! Chakra depletion.');
             }
             
             await sock.sendMessage(from, {
-                video: videoBuffer,
+                video: { url: videoUrl },
                 caption: `🍥 *JUTSU SUCCESS!* 🌀\n\n🎞️ *Video Scroll:* "${videoPrompt}"\n⚡ *Powered by Wind Style: Rasenshuriken!* \n\n*Believe it!* 🤜🤛`,
                 mimetype: 'video/mp4',
                 fileName: `Naruto_Scroll_${Date.now()}.mp4`
@@ -66,20 +58,8 @@ async function imagineCommand(sock, from, msg, args) {
             const enhancedPrompt = `${text}, high quality, detailed, masterpiece, 4k, cinematic lighting`;
             const apiUrl = `https://shizoapi.onrender.com/api/ai/imagine?apikey=shizo&query=${encodeURIComponent(enhancedPrompt)}`;
             
-            const imageBuffer = await fetchBuffer(apiUrl, {
-                headers: {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                    'Accept': 'image/png,image/jpeg,image/*;q=0.9,*/*;q=0.8'
-                }
-            });
-
-            // Lowered threshold to 10kb for images
-            if (!Buffer.isBuffer(imageBuffer) || imageBuffer.length < 10240) {
-                throw new Error('Image scroll is too thin! Chakra depletion (Buffer < 10kb)');
-            }
-            
             await sock.sendMessage(from, {
-                image: imageBuffer,
+                image: { url: apiUrl },
                 caption: `🍥 *JUTSU SUCCESS!* 🌀\n\n🖼️ *Image Scroll:* "${text}"\n⚡ *Mastered by the Seventh Hokage!* \n\n*Believe it!* 🤜🤛`
             }, { quoted: msg });
         }
