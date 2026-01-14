@@ -174,7 +174,7 @@ async function updateViaZip(sock, chatId, message, zipOverride) {
     return { copiedFiles: copied };
 }
 
-async function(sock, from, msg, args) {
+async function updateCommand(sock, from, msg, args) {
     try {
         await sock.sendMessage(from, { text: '✅ Update complete! Restarting…' }, { quoted: msg });
     } catch {}

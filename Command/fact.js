@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-module.exports = async function(sock, from, msg, args) {
+module.exports = async function factCommand(sock, from, msg, args) {
     try {
         const response = await axios.get('https://uselessfacts.jsph.pl/random.json?language=en');
         const fact = response.data.text;

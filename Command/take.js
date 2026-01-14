@@ -4,7 +4,7 @@ const { downloadMediaMessage } = require('@whiskeysockets/baileys');
 const webp = require('node-webpmux');
 const crypto = require('crypto');
 
-async function(sock, from, msg, args) {
+async function takeCommand(sock, from, msg, args) {
     try {
         // Check if message is a reply to a sticker
         const quotedMessage = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;

@@ -29,7 +29,7 @@ function writeState(enabled, message) {
     } catch {}
 }
 
-async function(sock, from, msg, args) {
+async function pmblockerCommand(sock, from, msg, args) {
     const senderId = message.key.participant || from;
     const isOwner = await isOwnerOrSudo(senderId, sock, chatId);
     

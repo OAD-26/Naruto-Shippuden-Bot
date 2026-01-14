@@ -19,7 +19,7 @@ function initConfig() {
 }
 
 // Toggle autoread feature
-async function(sock, from, msg, args) {
+async function autoreadCommand(sock, from, msg, args) {
     try {
         const senderId = message.key.participant || from;
         const isOwner = await isOwnerOrSudo(senderId, sock, chatId);

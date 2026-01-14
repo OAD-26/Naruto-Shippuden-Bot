@@ -46,7 +46,7 @@ async function getOkatsuVideoByUrl(youtubeUrl) {
     throw new Error('Okatsu ytmp4 returned no mp4');
 }
 
-async function(sock, from, msg, args) {
+async function videoCommand(sock, from, msg, args) {
     try {
         const text = message.message?.conversation || message.message?.extendedTextMessage?.text;
         const searchQuery = text.split(' ').slice(1).join(' ').trim();

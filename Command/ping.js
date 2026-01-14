@@ -20,7 +20,7 @@ function formatTime(seconds) {
     return time.trim();
 }
 
-async function(sock, from, msg, args) {
+async function pingCommand(sock, from, msg, args) {
     try {
         const imagePath = path.join(__dirname, '../Assets/Naruto-Shippuden-Bot_Avatar.png');
         const start = Date.now();

@@ -115,7 +115,7 @@ async function sendAnimu(sock, chatId, message, type) {
     );
 }
 
-async function(sock, from, msg, args) {
+async function animeCommand(sock, from, msg, args) {
     const subArg = args && args[0] ? args[0] : '';
     const sub = normalizeType(subArg);
 

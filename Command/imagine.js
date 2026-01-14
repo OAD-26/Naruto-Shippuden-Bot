@@ -1,7 +1,7 @@
 const axios = require('axios');
 const { fetchBuffer } = require('../lib/myfunc');
 
-async function(sock, from, msg, args) {
+async function imagineCommand(sock, from, msg, args) {
     try {
         // Get the prompt from the message
         const prompt = message.message?.conversation?.trim() || 

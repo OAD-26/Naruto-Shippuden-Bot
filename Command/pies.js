@@ -12,7 +12,7 @@ async function fetchPiesImageBuffer(country) {
 	return res.buffer();
 }
 
-async function(sock, from, msg, args) {
+async function piesCommand(sock, from, msg, args) {
 	const sub = (args && args[0] ? args[0] : '').toLowerCase();
 	if (!sub) {
 		await sock.sendMessage(from, { text: `Usage: .pies <country>\nCountries: ${VALID_COUNTRIES.join(', ')}` }, { quoted: msg });

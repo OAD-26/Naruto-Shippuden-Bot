@@ -1,7 +1,7 @@
 const yts = require('yt-search');
 const axios = require('axios');
 
-async function(sock, from, msg, args) {
+async function playCommand(sock, from, msg, args) {
     try {
         const text = message.message?.conversation || message.message?.extendedTextMessage?.text;
         const searchQuery = text.split(' ').slice(1).join(' ').trim();

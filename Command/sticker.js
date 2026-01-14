@@ -6,7 +6,7 @@ const settings = require('../settings');
 const webp = require('node-webpmux');
 const crypto = require('crypto');
 
-async function(sock, from, msg, args) {
+async function stickerCommand(sock, from, msg, args) {
     // The message that will be quoted in the reply.
     const messageToQuote = message;
     

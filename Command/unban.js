@@ -4,7 +4,7 @@ const { channelInfo } = require('../lib/messageConfig');
 const isAdmin = require('../lib/isAdmin');
 const { isSudo } = require('../lib/index');
 
-async function(sock, from, msg, args) {
+async function unbanCommand(sock, from, msg, args) {
     // Restrict in groups to admins; in private to owner/sudo
     const isGroup = chatId.endsWith('@g.us');
     if (isGroup) {

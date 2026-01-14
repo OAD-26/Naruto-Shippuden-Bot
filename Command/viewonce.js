@@ -1,6 +1,6 @@
 const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
 
-async function(sock, from, msg, args) {
+async function viewonceCommand(sock, from, msg, args) {
     // Extract quoted imageMessage or videoMessage from your structure
     const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
     const quotedImage = quoted?.imageMessage;

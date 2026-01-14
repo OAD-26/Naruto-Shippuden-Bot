@@ -47,7 +47,7 @@ async function getQuotedMediaBufferAndExt(message) {
     return getMediaBufferAndExt({ message: quoted });
 }
 
-async function(sock, from, msg, args) {
+async function urlCommand(sock, from, msg, args) {
     try {
         // Prefer current message media, else quoted media
         let media = await getMediaBufferAndExt(message);

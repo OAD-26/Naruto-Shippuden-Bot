@@ -4,7 +4,7 @@ const axios = require('axios');
 // Store processed message IDs to prevent duplicates
 const processedMessages = new Set();
 
-async function(sock, from, msg, args) {
+async function tiktokCommand(sock, from, msg, args) {
     try {
         // Check if message has already been processed
         if (processedMessages.has(message.key.id)) {

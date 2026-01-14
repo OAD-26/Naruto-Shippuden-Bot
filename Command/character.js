@@ -1,7 +1,7 @@
 const axios = require('axios');
 const { channelInfo } = require('../lib/messageConfig');
 
-async function(sock, from, msg, args) {
+async function characterCommand(sock, from, msg, args) {
     let userToAnalyze;
     
     // Check for mentioned users

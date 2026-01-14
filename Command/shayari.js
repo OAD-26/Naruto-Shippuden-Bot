@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-async function(sock, from, msg, args) {
+async function shayariCommand(sock, from, msg, args) {
     try {
         const response = await fetch('https://shizoapi.onrender.com/api/texts/shayari?apikey=shizo');
         const data = await response.json();

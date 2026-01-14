@@ -31,7 +31,7 @@ function isValidMediaUrl(url) {
            url.includes('http');
 }
 
-async function(sock, from, msg, args) {
+async function instagramCommand(sock, from, msg, args) {
     try {
         // Check if message has already been processed
         if (processedMessages.has(message.key.id)) {

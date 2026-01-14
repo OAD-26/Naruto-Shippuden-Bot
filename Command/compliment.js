@@ -31,7 +31,7 @@ const compliments = [
     "You make the world a better place just by being in it."
 ];
 
-async function(sock, from, msg, args) {
+async function complimentCommand(sock, from, msg, args) {
     try {
         if (!message || !chatId) {
             console.log('Invalid message or chatId:', { message, chatId });

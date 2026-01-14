@@ -2,7 +2,7 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
-async function(sock, from, msg, args) {
+async function facebookCommand(sock, from, msg, args) {
     try {
         const text = message.message?.conversation || message.message?.extendedTextMessage?.text;
         const url = text.split(' ').slice(1).join(' ').trim();

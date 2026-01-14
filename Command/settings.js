@@ -11,7 +11,7 @@ function readJsonSafe(path, fallback) {
 
 const isOwnerOrSudo = require('../lib/isOwner');
 
-async function(sock, from, msg, args) {
+async function settingsCommand(sock, from, msg, args) {
     try {
         const senderId = message.key.participant || from;
         const isOwner = await isOwnerOrSudo(senderId, sock, chatId);

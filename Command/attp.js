@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { writeExifImg, writeExifVid } = require('../lib/exif');
 
-async function(sock, from, msg, args) {
+async function attpCommand(sock, from, msg, args) {
     const userMessage = message.message.conversation || message.message.extendedTextMessage?.text || '';
     const text = userMessage.split(' ').slice(1).join(' ');
 

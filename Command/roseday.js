@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-async function(sock, from, msg, args) {
+async function rosedayCommand(sock, from, msg, args) {
     try {
         
         const res = await fetch(`https://api.princetechn.com/api/fun/roseday?apikey=prince`);

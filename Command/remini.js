@@ -25,7 +25,7 @@ async function getQuotedOrOwnImageUrl(sock, message) {
     return null;
 }
 
-async function(sock, from, msg, args) {
+async function reminiCommand(sock, from, msg, args) {
     try {
         let imageUrl = null;
         

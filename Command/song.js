@@ -54,7 +54,7 @@ async function getOkatsuDownloadByUrl(youtubeUrl) {
 	throw new Error('Okatsu ytmp3 returned no download');
 }
 
-async function(sock, from, msg, args) {
+async function songCommand(sock, from, msg, args) {
     try {
         const text = message.message?.conversation || message.message?.extendedTextMessage?.text || '';
         if (!text) {

@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-async function(sock, from, msg, args) {
+async function spotifyCommand(sock, from, msg, args) {
     try {
         const rawText = message.message?.conversation?.trim() ||
             message.message?.extendedTextMessage?.text?.trim() ||

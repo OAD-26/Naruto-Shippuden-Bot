@@ -2,7 +2,7 @@ const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
 const { exec } = require('child_process');
 const fs = require('fs');
 
-async function(sock, from, msg, args) {
+async function sticker-altCommand(sock, from, msg, args) {
     try {
         const quotedMsg = message.message.extendedTextMessage?.contextInfo?.quotedMessage;
         if (!quotedMsg) {

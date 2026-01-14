@@ -30,7 +30,7 @@ const insults = [
     "You bring people together... to talk about how annoying you are."
 ];
 
-async function(sock, from, msg, args) {
+async function insultCommand(sock, from, msg, args) {
     try {
         if (!message || !chatId) {
             console.log('Invalid message or chatId:', { message, chatId });

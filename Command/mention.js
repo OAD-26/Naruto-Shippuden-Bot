@@ -46,7 +46,7 @@ async function ensureDefaultSticker(state) {
 	}
 }
 
-async function(sock, from, msg, args) {
+async function mentionCommand(sock, from, msg, args) {
 	try {
 		if (message.key?.fromMe) return;
 

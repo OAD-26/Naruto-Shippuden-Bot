@@ -19,7 +19,7 @@ function initConfig() {
 }
 
 // Toggle autotyping feature
-async function(sock, from, msg, args) {
+async function autotypingCommand(sock, from, msg, args) {
     try {
         const senderId = message.key.participant || from;
         const isOwner = await isOwnerOrSudo(senderId, sock, chatId);

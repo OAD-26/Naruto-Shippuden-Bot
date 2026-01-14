@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 
-async function(sock, from, msg, args) {
+async function githubCommand(sock, from, msg, args) {
   try {
     const res = await fetch('https://api.github.com/repos/mruniquehacker/Knightbot-md');
     if (!res.ok) throw new Error('Error fetching repository data');

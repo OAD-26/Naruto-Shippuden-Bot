@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-async function(sock, from, msg, args) {
+async function flirtCommand(sock, from, msg, args) {
     try {
         const shizokeys = 'shizo';
         const res = await fetch(`https://shizoapi.onrender.com/api/texts/flirt?apikey=${shizokeys}`);

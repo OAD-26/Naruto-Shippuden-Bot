@@ -2,7 +2,7 @@ const settings = require('../settings');
 const fs = require('fs');
 const path = require('path');
 
-async function(sock, from, msg, args) {
+async function helpCommand(sock, from, msg, args) {
     const helpMessage = `
 ╔═══════════════════╗
    *🤖 ${settings.botName || 'Naruto-Shippuden-Bot'}*  

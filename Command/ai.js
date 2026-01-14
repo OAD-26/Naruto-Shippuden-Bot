@@ -1,7 +1,7 @@
 const axios = require('axios');
 const fetch = require('node-fetch');
 
-async function(sock, from, msg, args) {
+async function aiCommand(sock, from, msg, args) {
     try {
         const text = message.message?.conversation || message.message?.extendedTextMessage?.text;
         

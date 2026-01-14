@@ -41,7 +41,7 @@ async function getQuotedOrOwnImageUrl(sock, message) {
     }
 }
 
-async function(sock, from, msg, args) {
+async function miscCommand(sock, from, msg, args) {
     try {
         const avatarUrl = await getQuotedOrOwnImageUrl(sock, message);
         const url = `https://api.some-random-api.com/canvas/misc/heart?avatar=${encodeURIComponent(avatarUrl)}`;
@@ -53,7 +53,7 @@ async function(sock, from, msg, args) {
     }
 }
 
-async function(sock, from, msg, args) {
+async function miscCommand(sock, from, msg, args) {
     const sub = (args[0] || '').toLowerCase();
     const rest = args.slice(1);
 
