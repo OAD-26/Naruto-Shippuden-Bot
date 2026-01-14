@@ -43,12 +43,12 @@ async function playCommand(sock, from, msg, args) {
         }
 
         // Send loading message
+        const bestResult = searchResults[0];
         await sock.sendMessage(from, {
-            text: `🍥 *Wind Style: Rasenshuriken!* 🌀\n\n_Gathering chakra from ${searchResults[0].source}... your download is in progress!_`
+            text: `🍥 *Wind Style: Rasenshuriken!* 🌀\n\n_Gathering chakra from ${bestResult.source}... your download is in progress!_`
         });
 
         // Get the best result
-        const bestResult = searchResults[0];
         const urlYt = bestResult.url;
         const title = bestResult.title;
 
