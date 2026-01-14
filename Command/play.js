@@ -11,22 +11,46 @@ async function playCommand(sock, from, msg, args) {
             });
         }
 
-        // Search for the song
+        // Multi-source search logic
+        let searchResults = [];
+        
+        // 1. Try Spotify via ShizoAPI
+        try {
+            const spotifyRes = await axios.get(`https://shizoapi.onrender.com/api/search/spotify?apikey=shizo&query=${encodeURIComponent(searchQuery)}`);
+            if (spotifyRes.data && spotifyRes.data.result && spotifyRes.data.result.length > 0) {
+                searchResults.push(...spotifyRes.data.result.map(r => ({ title: r.title, url: r.url, source: 'Spotify' })));
+            }
+        } catch (e) {}
+
+        // 2. Try Audiomack via ShizoAPI
+        try {
+            const audiomackRes = await axios.get(`https://shizoapi.onrender.com/api/search/audiomack?apikey=shizo&query=${encodeURIComponent(searchQuery)}`);
+            if (audiomackRes.data && audiomackRes.data.result && audiomackRes.data.result.length > 0) {
+                searchResults.push(...audiomackRes.data.result.map(r => ({ title: r.title, url: r.url, source: 'Audiomack' })));
+            }
+        } catch (e) {}
+
+        // 3. Fallback to YouTube Search
         const { videos } = await yts(searchQuery);
-        if (!videos || videos.length === 0) {
+        if (videos && videos.length > 0) {
+            searchResults.push(...videos.slice(0, 3).map(v => ({ title: v.title, url: v.url, source: 'YouTube' })));
+        }
+
+        if (searchResults.length === 0) {
             return await sock.sendMessage(from, { 
-                text: "🚫 *Shadow Clone Jutsu Failed!* 🌀\n\nNo songs found in the Hidden Leaf scroll!"
+                text: "🚫 *Shadow Clone Jutsu Failed!* 🌀\n\nNo songs found in the Hidden Leaf scrolls (Spotify, Audiomack, or YouTube)!"
             });
         }
 
         // Send loading message
         await sock.sendMessage(from, {
-            text: "🍥 *Wind Style: Rasenshuriken!* 🌀\n\n_Gathering chakra... your download is in progress!_"
+            text: `🍥 *Wind Style: Rasenshuriken!* 🌀\n\n_Gathering chakra from ${searchResults[0].source}... your download is in progress!_`
         });
 
-        // Get the first video result
-        const video = videos[0];
-        const urlYt = video.url;
+        // Get the best result
+        const bestResult = searchResults[0];
+        const urlYt = bestResult.url;
+        const title = bestResult.title;
 
         // Try multiple APIs for better reliability
         const apis = [
