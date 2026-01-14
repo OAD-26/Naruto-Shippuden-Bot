@@ -11,7 +11,8 @@ async function imagineCommand(sock, from, msg, args) {
             }, { quoted: msg });
         }
 
-        const isVideo = text.toLowerCase().includes('video');
+        const videoKeywords = ['video', 'motion', 'moving', 'clip', 'animation', 'animated', 'live', 'movie', 'film'];
+        const isVideo = videoKeywords.some(keyword => text.toLowerCase().includes(keyword));
         
         await sock.sendMessage(from, {
             text: `🍥 *Chakra focus initiated...* 🌀\n\nManifesting your ${isVideo ? 'video' : 'image'} through the *Summoning Jutsu*! Please wait...`
@@ -19,7 +20,7 @@ async function imagineCommand(sock, from, msg, args) {
 
         if (isVideo) {
             // Video Generation using ZELL API (Multi-step)
-            const videoPrompt = text.replace(/video/gi, '').trim();
+            const videoPrompt = text.replace(new RegExp(videoKeywords.join('|'), 'gi'), '').trim();
             const apiUrl = `https://shizoapi.onrender.com/api/ai/z-imagine-video?apikey=shizo&query=${encodeURIComponent(videoPrompt)}`;
             
             const response = await axios.get(apiUrl);
@@ -33,8 +34,9 @@ async function imagineCommand(sock, from, msg, args) {
                     }
                 });
 
-                if (!Buffer.isBuffer(videoBuffer) || videoBuffer.length < 51200) {
-                    throw new Error('Video scroll is too thin! Chakra depletion (Buffer < 50kb)');
+                // Lowered threshold to 10kb to prevent false "thin scroll" errors while still ensuring quality
+                if (!Buffer.isBuffer(videoBuffer) || videoBuffer.length < 10240) {
+                    throw new Error('Video scroll is too thin! Chakra depletion (Buffer < 10kb)');
                 }
                 
                 await sock.sendMessage(from, {
@@ -58,8 +60,9 @@ async function imagineCommand(sock, from, msg, args) {
                 }
             });
 
-            if (!Buffer.isBuffer(imageBuffer) || imageBuffer.length < 51200) {
-                throw new Error('Image scroll is too thin! Chakra depletion (Buffer < 50kb)');
+            // Lowered threshold to 10kb for images
+            if (!Buffer.isBuffer(imageBuffer) || imageBuffer.length < 10240) {
+                throw new Error('Image scroll is too thin! Chakra depletion (Buffer < 10kb)');
             }
             
             await sock.sendMessage(from, {
