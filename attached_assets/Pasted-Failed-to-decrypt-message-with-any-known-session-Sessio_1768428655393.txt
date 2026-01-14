@@ -1,0 +1,94 @@
+Failed to decrypt message with any known session...
+Session error:Error: Bad MAC Error: Bad MAC
+    at Object.verifyMAC (/home/runner/workspace/node_modules/libsignal/src/crypto.js:87:15)
+    at SessionCipher.doDecryptWhisperMessage (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:250:16)
+    at async SessionCipher.decryptWithSessions (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:147:29)
+    at async 263887790305531_1.0 [as awaitable] (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:171:28)
+    at async _asyncQueueExecutor (/home/runner/workspace/node_modules/libsignal/src/queue_job.js:20:29)
+Session error:Error: Bad MAC Error: Bad MAC
+    at Object.verifyMAC (/home/runner/workspace/node_modules/libsignal/src/crypto.js:87:15)
+    at SessionCipher.doDecryptWhisperMessage (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:250:16)
+    at async SessionCipher.decryptWithSessions (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:147:29)
+    at async 263887790305531_1.0 [as awaitable] (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:171:28)
+    at async _asyncQueueExecutor (/home/runner/workspace/node_modules/libsignal/src/queue_job.js:20:29)
+Session error:Error: Bad MAC Error: Bad MAC
+    at Object.verifyMAC (/home/runner/workspace/node_modules/libsignal/src/crypto.js:87:15)
+    at SessionCipher.doDecryptWhisperMessage (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:250:16)
+    at async SessionCipher.decryptWithSessions (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:147:29)
+    at async 263887790305531_1.0 [as awaitable] (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:171:28)
+    at async _asyncQueueExecutor (/home/runner/workspace/node_modules/libsignal/src/queue_job.js:20:29)
+Session error:Error: Bad MAC Error: Bad MAC
+    at Object.verifyMAC (/home/runner/workspace/node_modules/libsignal/src/crypto.js:87:15)
+    at SessionCipher.doDecryptWhisperMessage (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:250:16)
+    at async SessionCipher.decryptWithSessions (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:147:29)
+    at async 263887790305531_1.0 [as awaitable] (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:171:28)
+    at async _asyncQueueExecutor (/home/runner/workspace/node_modules/libsignal/src/queue_job.js:20:29)
+Session error:Error: Bad MAC Error: Bad MAC
+    at Object.verifyMAC (/home/runner/workspace/node_modules/libsignal/src/crypto.js:87:15)
+    at SessionCipher.doDecryptWhisperMessage (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:250:16)
+    at async SessionCipher.decryptWithSessions (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:147:29)
+    at async 263887790305531_1.0 [as awaitable] (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:171:28)
+    at async _asyncQueueExecutor (/home/runner/workspace/node_modules/libsignal/src/queue_job.js:20:29)
+Session error:Error: Bad MAC Error: Bad MAC
+    at Object.verifyMAC (/home/runner/workspace/node_modules/libsignal/src/crypto.js:87:15)
+    at SessionCipher.doDecryptWhisperMessage (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:250:16)
+    at async SessionCipher.decryptWithSessions (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:147:29)
+    at async 263887790305531_1.0 [as awaitable] (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:171:28)
+    at async _asyncQueueExecutor (/home/runner/workspace/node_modules/libsignal/src/queue_job.js:20:29)
+Failed to decrypt message with any known session...
+Session error:Error: Bad MAC Error: Bad MAC
+    at Object.verifyMAC (/home/runner/workspace/node_modules/libsignal/src/crypto.js:87:15)
+    at SessionCipher.doDecryptWhisperMessage (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:250:16)
+    at async SessionCipher.decryptWithSessions (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:147:29)
+    at async 263887790305531_1.0 [as awaitable] (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:171:28)
+    at async _asyncQueueExecutor (/home/runner/workspace/node_modules/libsignal/src/queue_job.js:20:29)
+Session error:Error: Bad MAC Error: Bad MAC
+    at Object.verifyMAC (/home/runner/workspace/node_modules/libsignal/src/crypto.js:87:15)
+    at SessionCipher.doDecryptWhisperMessage (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:250:16)
+    at async SessionCipher.decryptWithSessions (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:147:29)
+    at async 263887790305531_1.0 [as awaitable] (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:171:28)
+    at async _asyncQueueExecutor (/home/runner/workspace/node_modules/libsignal/src/queue_job.js:20:29)
+Session error:Error: Bad MAC Error: Bad MAC
+    at Object.verifyMAC (/home/runner/workspace/node_modules/libsignal/src/crypto.js:87:15)
+    at SessionCipher.doDecryptWhisperMessage (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:250:16)
+    at async SessionCipher.decryptWithSessions (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:147:29)
+    at async 263887790305531_1.0 [as awaitable] (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:171:28)
+    at async _asyncQueueExecutor (/home/runner/workspace/node_modules/libsignal/src/queue_job.js:20:29)
+Session error:Error: Bad MAC Error: Bad MAC
+    at Object.verifyMAC (/home/runner/workspace/node_modules/libsignal/src/crypto.js:87:15)
+    at SessionCipher.doDecryptWhisperMessage (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:250:16)
+    at async SessionCipher.decryptWithSessions (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:147:29)
+    at async 263887790305531_1.0 [as awaitable] (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:171:28)
+    at async _asyncQueueExecutor (/home/runner/workspace/node_modules/libsignal/src/queue_job.js:20:29)
+Session error:Error: Bad MAC Error: Bad MAC
+    at Object.verifyMAC (/home/runner/workspace/node_modules/libsignal/src/crypto.js:87:15)
+    at SessionCipher.doDecryptWhisperMessage (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:250:16)
+    at async SessionCipher.decryptWithSessions (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:147:29)
+    at async 263887790305531_1.0 [as awaitable] (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:171:28)
+    at async _asyncQueueExecutor (/home/runner/workspace/node_modules/libsignal/src/queue_job.js:20:29)
+Session error:Error: Bad MAC Error: Bad MAC
+    at Object.verifyMAC (/home/runner/workspace/node_modules/libsignal/src/crypto.js:87:15)
+    at SessionCipher.doDecryptWhisperMessage (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:250:16)
+    at async SessionCipher.decryptWithSessions (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:147:29)
+    at async 263887790305531_1.0 [as awaitable] (/home/runner/workspace/node_modules/libsignal/src/session_cipher.js:171:28)
+    at async _asyncQueueExecutor (/home/runner/workspace/node_modules/libsignal/src/queue_job.js:20:29)
+❌ Error executing command: imagine Error: Cannot find module '../lib/myfunc'
+Require stack:
+- /home/runner/workspace/Command/imagine.js
+- /home/runner/workspace/index.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1212:15)
+    at Module._load (node:internal/modules/cjs/loader:1043:27)
+    at Module.require (node:internal/modules/cjs/loader:1298:19)
+    at require (node:internal/modules/helpers:182:18)
+    at Object.<anonymous> (/home/runner/workspace/Command/imagine.js:2:25)
+    at Module._compile (node:internal/modules/cjs/loader:1529:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1613:10)
+    at Module.load (node:internal/modules/cjs/loader:1275:32)
+    at Module._load (node:internal/modules/cjs/loader:1096:12)
+    at Module.require (node:internal/modules/cjs/loader:1298:19) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/home/runner/workspace/Command/imagine.js',
+    '/home/runner/workspace/index.js'
+  ]
+}
