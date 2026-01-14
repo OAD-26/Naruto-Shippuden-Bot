@@ -95,24 +95,30 @@ async function videoCommand(sock, from, msg, args) {
             return;
         }
 
-        // Get video: try multi-API logic
+        // Get video: try multi-API logic (Expanded for better reliability)
         let videoData = null;
         const apis = [
+            `https://shizoapi.onrender.com/api/download/ytmp4?apikey=shizo&url=${encodeURIComponent(videoUrl)}`,
             `https://api.giftedtech.my.id/api/download/dlmp4?url=${encodeURIComponent(videoUrl)}`,
             `https://izumiiiiiiii.dpdns.org/downloader/youtube?url=${encodeURIComponent(videoUrl)}&format=720`,
-            `https://okatsu-rolezapiiz.vercel.app/downloader/ytmp4?url=${encodeURIComponent(videoUrl)}`
+            `https://okatsu-rolezapiiz.vercel.app/downloader/ytmp4?url=${encodeURIComponent(videoUrl)}`,
+            `https://shizoapi.onrender.com/api/download/instagram?apikey=shizo&url=${encodeURIComponent(videoUrl)}`,
+            `https://shizoapi.onrender.com/api/download/tiktok?apikey=shizo&url=${encodeURIComponent(videoUrl)}`
         ];
 
         for (const api of apis) {
             try {
-                const res = await axios.get(api, { timeout: 20000 });
+                const res = await axios.get(api, { timeout: 25000 });
                 const d = res.data;
-                if (d.status === true || d.success === true || d.result?.download || d.result?.mp4) {
-                    videoData = {
-                        download: d.result?.download || d.result?.mp4 || d.result?.url || d.download_url,
-                        title: d.result?.title || d.title || videoTitle
-                    };
-                    if (videoData.download) break;
+                if (d.status === true || d.success === true || d.result || d.download_url) {
+                    const downloadUrl = d.result?.download || d.result?.mp4 || d.result?.url || d.download_url || d.result?.video || d.url;
+                    if (downloadUrl && downloadUrl.startsWith('http')) {
+                        videoData = {
+                            download: downloadUrl,
+                            title: d.result?.title || d.title || videoTitle || 'Shinobi_Video'
+                        };
+                        break;
+                    }
                 }
             } catch (e) { console.log(`Video API Failed: ${api}`); }
         }

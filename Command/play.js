@@ -65,23 +65,27 @@ async function playCommand(sock, from, msg, args) {
 
         await sock.sendMessage(from, { text: infoMessage }, { quoted: msg });
 
-        // Try multiple APIs for better reliability
+        // Try multiple APIs for better reliability (Expanded with more diverse sources)
         const apis = [
-            `https://api.giftedtech.my.id/api/download/dlmp3?url=${urlYt}`,
-            `https://apis-keith.vercel.app/download/dlmp3?url=${urlYt}`,
-            `https://api.vreden.my.id/api/ytmp3?url=${urlYt}`
+            `https://shizoapi.onrender.com/api/download/spotify?apikey=shizo&url=${encodeURIComponent(urlYt)}`,
+            `https://shizoapi.onrender.com/api/download/audiomack?apikey=shizo&url=${encodeURIComponent(urlYt)}`,
+            `https://api.giftedtech.my.id/api/download/dlmp3?url=${encodeURIComponent(urlYt)}`,
+            `https://apis-keith.vercel.app/download/dlmp3?url=${encodeURIComponent(urlYt)}`,
+            `https://api.vreden.my.id/api/ytmp3?url=${encodeURIComponent(urlYt)}`,
+            `https://shizoapi.onrender.com/api/download/ytmp3?apikey=shizo&url=${encodeURIComponent(urlYt)}`
         ];
 
         let audioUrl = null;
 
         for (const api of apis) {
             try {
-                const response = await axios.get(api, { timeout: 15000 });
+                const response = await axios.get(api, { timeout: 20000 });
                 const data = response.data;
                 
-                if (data.status === true || data.success === true || data.status === 200) {
-                    audioUrl = data.result?.downloadUrl || data.result?.url || data.result?.download;
-                    if (audioUrl) break;
+                // Flexible status check for various APIs
+                if (data.status === true || data.success === true || data.status === 200 || data.result) {
+                    audioUrl = data.result?.downloadUrl || data.result?.url || data.result?.download || data.result?.mp3 || data.url;
+                    if (audioUrl && audioUrl.startsWith('http')) break;
                 }
             } catch (err) {
                 console.log(`API Failed: ${api}`);
