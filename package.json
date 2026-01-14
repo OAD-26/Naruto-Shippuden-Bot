@@ -111,6 +111,7 @@
     "raw-body": "^2.5.3",
     "readable-stream": "^4.7.0",
     "real-require": "^0.2.0",
+    "ruhend-scraper": "^9.0.8",
     "safe-buffer": "^5.2.1",
     "safe-stable-stringify": "^2.5.0",
     "safer-buffer": "^2.1.2",
