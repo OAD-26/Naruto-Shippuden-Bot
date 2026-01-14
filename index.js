@@ -18,23 +18,17 @@ const {
 // ===============================
 // 🔥 SETTINGS
 // ===============================
-const settings = {
-  botName: "Naruto-Shippuden-Bot",
-  prefix: "!",
-  creatorName: "OAD-26",
-  creatorNumber: "2349138385352",
-  publicUrl: "https://6209d386-490e-4795-800f-09aa5c093265-00-1kld4o4q4k4gz.picard.replit.dev/", // will ping self
-  ownerCommands: ["setbotname","setpp","setbotpp","settings","github"], // Owner only
-  adminCommands: ["ban","kick","promote","demote","groupinfo"], // Admins only
-  everyoneCommands: [], // Fun commands etc. loaded automatically
-  groupInteraction: {}, // Stores group interact status {groupJID:true/false}
-};
+const settings = require('./settings');
+settings.ownerCommands = ["setbotname","setpp","setbotpp","settings","github"];
+settings.adminCommands = ["ban","kick","promote","demote","groupinfo"];
+settings.everyoneCommands = [];
+settings.groupInteraction = {};
 
 // ===============================
 // 🌐 WEB SERVER
 // ===============================
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 app.get("/", (_, res) => {
   res.status(200).send("🍥 Naruto Shippuden Bot is Alive & Breathing Chakra 🔥");

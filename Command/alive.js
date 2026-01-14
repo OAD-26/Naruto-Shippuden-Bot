@@ -4,8 +4,8 @@ const path = require('path');
 module.exports = {
     name: 'alive',
     description: 'Check if bot is alive',
-    execute: async (sock, msg, text) => {
-        const jid = msg.key.remoteJid;
+    execute: async (sock, from, msg, args) => {
+        const jid = from;
         const imagePath = path.join(__dirname, '../Assets/Naruto-Shippuden-Bot_Avatar.png');
         const aliveMessage = '✅ *Naruto Bot* is alive and ready to serve! 🍥🔥 Believe it! 🤜🤛';
 
