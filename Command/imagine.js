@@ -19,35 +19,48 @@ async function imagineCommand(sock, from, msg, args) {
         }, { quoted: msg });
 
         if (isVideo) {
-            // Video Generation using ZELL API (Multi-step)
+            // Video Generation using alternative Shizo/ZELL API endpoints
             const videoPrompt = text.replace(new RegExp(videoKeywords.join('|'), 'gi'), '').trim();
-            const apiUrl = `https://shizoapi.onrender.com/api/ai/z-imagine-video?apikey=shizo&query=${encodeURIComponent(videoPrompt)}`;
             
-            const response = await axios.get(apiUrl);
-            if (response.data && response.data.result) {
-                const videoUrl = response.data.result;
-                const videoBuffer = await fetchBuffer(videoUrl, {
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                        'Accept': 'video/mp4,video/*;q=0.9,*/*;q=0.8',
-                        'Referer': 'https://shizoapi.onrender.com/'
-                    }
-                });
+            // Backup API system
+            const apiEndpoints = [
+                `https://shizoapi.onrender.com/api/ai/z-imagine-video?apikey=shizo&query=${encodeURIComponent(videoPrompt)}`,
+                `https://shizoapi.onrender.com/api/ai/imagine-video?apikey=shizo&query=${encodeURIComponent(videoPrompt)}`,
+                `https://shizoapi.onrender.com/api/ai/motion-video?apikey=shizo&query=${encodeURIComponent(videoPrompt)}`
+            ];
 
-                // Lowered threshold to 10kb to prevent false "thin scroll" errors while still ensuring quality
-                if (!Buffer.isBuffer(videoBuffer) || videoBuffer.length < 10240) {
-                    throw new Error('Video scroll is too thin! Chakra depletion (Buffer < 10kb)');
+            let videoBuffer = null;
+            let finalVideoPrompt = videoPrompt;
+
+            for (const apiUrl of apiEndpoints) {
+                try {
+                    const response = await axios.get(apiUrl);
+                    if (response.data && (response.data.result || response.data.url)) {
+                        const videoUrl = response.data.result || response.data.url;
+                        videoBuffer = await fetchBuffer(videoUrl, {
+                            headers: {
+                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                                'Accept': 'video/mp4,video/*;q=0.9,*/*;q=0.8',
+                                'Referer': 'https://shizoapi.onrender.com/'
+                            }
+                        });
+                        if (Buffer.isBuffer(videoBuffer) && videoBuffer.length > 1024) break;
+                    }
+                } catch (e) {
+                    continue;
                 }
-                
-                await sock.sendMessage(from, {
-                    video: videoBuffer,
-                    caption: `🍥 *JUTSU SUCCESS!* 🌀\n\n🎞️ *Video Scroll:* "${videoPrompt}"\n⚡ *Powered by Wind Style: Rasenshuriken!* \n\n*Believe it!* 🤜🤛`,
-                    mimetype: 'video/mp4',
-                    fileName: `Naruto_Scroll_${Date.now()}.mp4`
-                }, { quoted: msg });
-            } else {
-                throw new Error('Video generation failed');
             }
+
+            if (!videoBuffer || videoBuffer.length < 1024) {
+                throw new Error('All Video Summoning scrolls failed! Chakra depletion.');
+            }
+            
+            await sock.sendMessage(from, {
+                video: videoBuffer,
+                caption: `🍥 *JUTSU SUCCESS!* 🌀\n\n🎞️ *Video Scroll:* "${videoPrompt}"\n⚡ *Powered by Wind Style: Rasenshuriken!* \n\n*Believe it!* 🤜🤛`,
+                mimetype: 'video/mp4',
+                fileName: `Naruto_Scroll_${Date.now()}.mp4`
+            }, { quoted: msg });
         } else {
             // Image Generation
             const enhancedPrompt = `${text}, high quality, detailed, masterpiece, 4k, cinematic lighting`;
