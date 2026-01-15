@@ -159,19 +159,6 @@ async function startBot() {
     const commandPath = path.join(process.cwd(),"Command",`${commandName}.js`);
     if(!fs.existsSync(commandPath)) return;
 
-    // Send auto message to Owner on first usage
-    if (!settings.ownerMessaged) {
-      const avatarPath = path.join(__dirname, "Assets/Naruto-Shippuden-Bot_Avatar.png");
-      const infoText = `🍥 *~ Naruto-Shippuden-Bot ~* 🍥\n─────────────────────────────\n👤 *Grandmaster:* ${settings.creatorName}\n📱 *Ninja Registry:* ${settings.creatorNumber}\n🤖 *Bot Identity:* ${settings.botName}\n👤 *Hokage (Owner):* ${sock.user.name || 'Shinobi'}\n📱 *Ninja Registry:* ${sock.user.id.split(':')[0]}\n─────────────────────────────\nWelcome to the Hidden Leaf! Use !menu to see all jutsu scrolls. 🌀`;
-      
-      if (fs.existsSync(avatarPath)) {
-        await sock.sendMessage(from, { image: fs.readFileSync(avatarPath), caption: infoText });
-      } else {
-        await sock.sendMessage(from, { text: infoText });
-      }
-      settings.ownerMessaged = true;
-    }
-
     try {
       delete require.cache[require.resolve(commandPath)];
       const commandFile = require(commandPath);
