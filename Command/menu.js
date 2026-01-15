@@ -8,10 +8,10 @@ module.exports = async (sock, from, msg, args) => {
     const prefix = settings.prefix;
 
     const categories = {
-      "📜 S-Rank Scroll (Owner)": ["stopbot", "viewurl", "clearsession", "setbotname", "setbotpp", "setpp", "settings", "github"],
+      "📜 S-Rank Scroll (Owner)": ["autoreact", "autotype", "autostatusview", "autostatuslike", "autoonline", "autowarn", "autoantiviewonce", "autodelete", "vv", "stopbot", "viewurl", "clearsession", "setbotname", "setbotpp", "setpp", "settings", "github"],
       "🍃 Leaf Village Laws (Admin)": ["kick", "ban", "mute", "promote", "demote"],
-      "🌀 Shinobi Alliance (Group)": ["groupinfo", "groupadmins", "groupdesc", "groupinvite", "groupinteract"],
-      "🍜 Ichiraku Ramen (General)": ["ping", "play", "joke", "quote", "weather", "news", "translate"]
+      "🌀 Shinobi Alliance (Group)": ["groupinfo", "groupadmins", "groupdesc", "groupinvite", "groupinteract", "grouplist"],
+      "🍜 Ichiraku Ramen (General)": ["ping", "play", "joke", "quote", "weather", "news", "translate", "imagine"]
     };
 
     let menuText = `

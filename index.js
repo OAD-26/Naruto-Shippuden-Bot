@@ -203,7 +203,11 @@ async function startBot() {
 
     // Load commands dynamically
     const commandPath = path.join(process.cwd(),"Command",`${commandName}.js`);
-    if(!fs.existsSync(commandPath)) return;
+    if(!fs.existsSync(commandPath)) {
+      return await sock.sendMessage(from, { 
+        text: `🚫 *Forbidden Jutsu Error!* 🌀\n\nCommand *!${commandName}* is not found in the Hidden Leaf scrolls! Check your spelling or use *!menu* to see available jutsu! 🍃`
+      });
+    }
 
     try {
       delete require.cache[require.resolve(commandPath)];
