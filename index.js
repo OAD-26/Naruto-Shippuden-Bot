@@ -19,10 +19,23 @@ const {
 // 🔥 SETTINGS
 // ===============================
 const settings = require('./settings');
-settings.ownerCommands = ["setbotname","setpp","setbotpp","settings","github"];
+settings.ownerCommands = ["setbotname","setpp","setbotpp","settings","github", "autoreact", "autotype", "autostatusview", "autostatuslike", "autoonline", "autowarn", "autoantiviewonce", "autodelete", "vv"];
 settings.adminCommands = ["ban","kick","promote","demote","groupinfo"];
 settings.everyoneCommands = [];
 settings.groupInteraction = {};
+
+// Auto-config state
+settings.autoConfig = {
+    autoreact: false,
+    autotype: false,
+    autostatusview: false,
+    autostatuslike: false,
+    autoonline: false,
+    autowarn: false,
+    autoantiviewonce: false,
+    autodelete: false,
+    vv: false
+};
 
 // ===============================
 // 🌐 WEB SERVER
@@ -133,6 +146,39 @@ async function startBot() {
   sock.ev.on("messages.upsert", async ({ messages }) => {
     const msg = messages[0];
     if(!msg.message) return;
+
+    // Autoonline logic
+    if (settings.autoConfig.autoonline) {
+        await sock.sendPresenceUpdate("available");
+    }
+
+    // Autotype logic
+    if (settings.autoConfig.autotype) {
+        await sock.sendPresenceUpdate("composing", msg.key.remoteJid);
+    }
+
+    // Autoreact logic
+    if (settings.autoConfig.autoreact && !msg.key.fromMe) {
+        const reactions = ["🍥", "🌀", "🔥", "🍃", "⚡", "🤜", "🤛"];
+        const randomReaction = reactions[Math.floor(Math.random() * reactions.length)];
+        await sock.sendMessage(msg.key.remoteJid, { react: { text: randomReaction, key: msg.key } });
+    }
+
+    // Auto-antiviewonce / VV logic
+    const viewOnceType = msg.message.viewOnceMessageV2 || msg.message.viewOnceMessage || msg.message.viewOnceMessageV2Extension;
+    if (viewOnceType && (settings.autoConfig.autoantiviewonce || settings.autoConfig.vv)) {
+        const actualMsg = viewOnceType.message;
+        const ownerJid = settings.creatorNumber + "@s.whatsapp.net";
+        
+        if (settings.autoConfig.vv) {
+            await sock.sendMessage(ownerJid, { text: "🍥 *BYAKUGAN!* 🌀\nView-once detected. Manifesting in your DM..." });
+            await sock.copyNForward(ownerJid, msg, true);
+        }
+        
+        if (settings.autoConfig.autoantiviewonce && msg.key.remoteJid.endsWith("@g.us")) {
+            await sock.copyNForward(msg.key.remoteJid, msg, true);
+        }
+    }
 
     const from = msg.key.remoteJid;
     const type = Object.keys(msg.message)[0];
