@@ -42,7 +42,9 @@ async function playCommand(sock, from, msg, args) {
         // 1. Try Ruhend Scraper (Very high reliability)
         try {
             const res = await ytmp3(urlYt);
-            if (res && res.download) {
+            if (res && res.url) {
+                audioUrl = res.url;
+            } else if (res && res.download) {
                 audioUrl = res.download;
             }
         } catch (e) {
@@ -52,10 +54,11 @@ async function playCommand(sock, from, msg, args) {
         // 2. Fallback to Multi-API system
         if (!audioUrl) {
             const apis = [
-                `https://shizoapi.onrender.com/api/download/ytmp3?apikey=shizo&url=${encodeURIComponent(urlYt)}`,
+                `https://api.shizocore.xyz/api/download/ytmp3?url=${encodeURIComponent(urlYt)}&apikey=shizo`,
                 `https://api.giftedtech.my.id/api/download/dlmp3?url=${encodeURIComponent(urlYt)}`,
                 `https://apis-keith.vercel.app/download/dlmp3?url=${encodeURIComponent(urlYt)}`,
-                `https://api.vreden.my.id/api/ytmp3?url=${encodeURIComponent(urlYt)}`
+                `https://api.vreden.my.id/api/ytmp3?url=${encodeURIComponent(urlYt)}`,
+                `https://shizoapi.onrender.com/api/download/ytmp3?apikey=shizo&url=${encodeURIComponent(urlYt)}`
             ];
 
             for (const api of apis) {
