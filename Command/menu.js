@@ -9,9 +9,10 @@ module.exports = async (sock, from, msg, args) => {
 
     const categories = {
       "📜 S-Rank Scroll (Owner)": ["autoreact", "autotype", "autostatusview", "autostatuslike", "autoonline", "autowarn", "autoantiviewonce", "autodelete", "vv", "stopbot", "viewurl", "clearsession", "setbotname", "setbotpp", "setpp", "settings", "github"],
-      "🍃 Leaf Village Laws (Admin)": ["kick", "ban", "mute", "promote", "demote"],
-      "🌀 Shinobi Alliance (Group)": ["groupinfo", "groupadmins", "groupdesc", "groupinvite", "groupinteract", "grouplist"],
-      "🍜 Ichiraku Ramen (General)": ["ping", "play", "joke", "quote", "weather", "news", "translate", "imagine"]
+      "🍃 Leaf Village Laws (Admin)": ["kick", "ban", "mute", "promote", "demote", "hidetag", "tagall", "groupinteract"],
+      "🌀 Shinobi Alliance (Group)": ["groupinfo", "groupadmins", "groupdesc", "groupinvite", "grouplist", "groupid"],
+      "📚 Ninja Academy (Education)": ["wikipedia", "brainly", "translate", "calc", "dictionary"],
+      "🍜 Ichiraku Ramen (General)": ["ping", "play", "joke", "quote", "weather", "news", "imagine", "lyrics"]
     };
 
     let menuText = `
