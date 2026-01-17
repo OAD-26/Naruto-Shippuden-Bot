@@ -19,6 +19,7 @@ const {
 // 🔥 SETTINGS
 // ===============================
 const settings = require('./settings');
+settings.publicUrl = "https://58dc470e-9993-464f-9067-10f29b4d8f84-00-hi0ncdhkg69i.worf.replit.dev/";
 settings.ownerCommands = ["setbotname","setpp","setbotpp","settings","github", "autoreact", "autotype", "autostatusview", "autostatuslike", "autoonline", "autowarn", "autoantiviewonce", "autodelete", "vv"];
 settings.adminCommands = ["ban","kick","promote","demote","groupinfo"];
 settings.everyoneCommands = [];
